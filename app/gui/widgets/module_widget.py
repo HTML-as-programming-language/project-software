@@ -25,3 +25,4 @@ class ModuleWidget(tkinter.Frame):
     def show_module(self, module):
         self.module = module
         self.title.config(text=f"Connected module: {module.name}", font=("Helvetica", TITLE_FONT_SIZE))
+        self.module_data.show_data_for_module(module)
