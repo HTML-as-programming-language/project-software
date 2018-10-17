@@ -33,7 +33,7 @@ myapp.master.title("App")
 def test():
     time.sleep(1)
     myapp.update_modules([
-        Module("harry", {"light.", "30%"}),
+        Module("harry", {"light", "30%"}),
         Module("test", {"temp.", 20}),
         Module("henk", {"temp.", 30}),
     ])
