@@ -2,7 +2,10 @@ import glob
 from client import Client
 
 class Backend:
-    clients = []
+    #clients = []
+
+    def __init__(self):
+        self.clients = []
 
     def find_ports(self):
         ports = glob.glob('/dev/ttyACM[0-9]*')
@@ -19,3 +22,6 @@ class Backend:
 
 b = Backend()
 b.find_ports()
+
+for c in b.clients:
+    c.open_hatch()
