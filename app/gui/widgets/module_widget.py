@@ -17,10 +17,9 @@ class ModuleWidget(tkinter.Frame):
         self.title.grid(column=0, row=0)
 
         self.data_and_actions_frame = tkinter.Frame(self)
-        self.module_data = None     # will be created when module is selected
-        self.module_actions = ModuleActions(self.data_and_actions_frame)
-
-        self.module_actions.grid(column=1, row=0, sticky="nesw")
+        # will be created when module is selected
+        self.module_data = None
+        self.module_actions = None
 
         self.data_and_actions_frame.columnconfigure(0, weight=1)
         self.data_and_actions_frame.columnconfigure(1, weight=1)
@@ -38,6 +37,9 @@ class ModuleWidget(tkinter.Frame):
         self.module = module
         self.title.config(text=f"Connected module: {module.name}", font=("Helvetica", TITLE_FONT_SIZE))
         self.update_module_data(module)
+
+        self.module_actions = ModuleActions(self.data_and_actions_frame, module)
+        self.module_actions.grid(column=1, row=0, sticky="nesw")
 
     def update_module_data(self, module):
         if self.module_data:

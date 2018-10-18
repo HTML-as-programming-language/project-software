@@ -34,9 +34,28 @@ myapp.master.title("App")
 def test():
     time.sleep(1)
     myapp.update_modules([
-        Module("harry", {"light": "30%"}),
-        Module("test", {"temp.": "20°C"}),
-        Module("henk", {"temp.": "30°C"})
+        Module(
+            "harry", data={"light": "30%"},
+            actions={
+                "doe iets": lambda: print("doe iets!?!?!"),
+                "doe iets anders": lambda: print("doe iets anders!?!?!")
+            }
+        ),
+        Module(
+            "test", data={"temp.": "20°C"},
+            actions={
+                "doe iets": lambda: print("doe iets!?!?!"),
+                "doe iets anders": lambda: print("doe iets anders!?!?!")
+            }
+
+        ),
+        Module(
+            "henk", data={"temp.": "30°C"},
+            actions={
+                "doe iets": lambda: print("doe iets!?!?!"),
+                "doe iets anders": lambda: print("doe iets anders!?!?!")
+            }
+        )
     ])
 
 
