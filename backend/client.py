@@ -16,15 +16,15 @@ class Client:
     and controlling a hatch based on data from its sensor(s).
     """
 
-    connection = None
-    thread = None
+    #connection = None
+    #thread = None
 
     # These values should be used as read-only.
     # There are written off the main thread.
-    supported_sensors = []
-    current_temp = 0
-    current_light = 0
-    current_pos = 0
+    #supported_sensors = []
+    #current_temp = 0
+    #current_light = 0
+    #current_pos = 0
 
     write_queue = None
 
@@ -41,6 +41,11 @@ class Client:
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.EIGHTBITS
             )
+
+        self.supported_sensors = []
+        self.current_temp = 0
+        self.current_light = 0
+        self.current_pos = 0
 
         self.write_queue = Queue()
         
