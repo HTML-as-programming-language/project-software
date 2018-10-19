@@ -75,7 +75,6 @@ class Client:
                 except ValueError:
                     print("unsupported sensor")
 
-                print("init", self.supported_sensors)
             elif pid == 102:
                 # Temperature update
                 self.current_temp = data
