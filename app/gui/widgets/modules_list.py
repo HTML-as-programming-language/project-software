@@ -23,4 +23,4 @@ class ModulesList(Listbox):
 
         self.delete(0)
         for module in modules:
-            self.insert(0, module.name)
+            self.insert(0, module.client.port)

@@ -33,7 +33,7 @@ class ModuleWidget(tkinter.Frame):
 
     def show_module(self, module):
         self.module = module
-        self.title.config(text=f"Connected module: {module.name}", font=("Helvetica", TITLE_FONT_SIZE))
+        self.title.config(text=f"Connected module: {module.client.port}", font=("Helvetica", TITLE_FONT_SIZE))
         self.update_module_data(module)
 
         self.module_actions = ModuleActions(self.data_and_actions_frame, module)

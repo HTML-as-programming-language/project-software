@@ -15,6 +15,10 @@ class Client:
     """
     Client is a module; an device connected to this computer by UART
     and controlling a hatch based on data from its sensor(s).
+    supported_sensors: list of SensorType.
+    current_temp: temperature in tenth degrees celsius.
+    current_light: light in percentage.
+    current_pos: position of hatch/sunscreen in percentage.
     """
 
     #connection = None
