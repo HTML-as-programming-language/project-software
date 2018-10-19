@@ -11,9 +11,10 @@ class ModuleConfig(Frame):
         super().__init__(master, borderwidth="2", relief="ridge", bg=BG)
         self.inputs = {}
         self.module = module
+        self.config_items = module.get_config_items()
 
         row = 0
-        for config_item in module.config.values():
+        for config_item in self.config_items:
             label = Label(self, text=config_item.name, bg=BG)
             label.grid(column=0, row=row, sticky="w")
             textbox = Entry(self)
@@ -35,13 +36,13 @@ class ModuleConfig(Frame):
     def apply(self):
         print("applyyyyyy")
 
-        for config_item in self.module.config.values():
+        for config_item in self.config_items:
             inputs = self.inputs[config_item]
             values = []
             for i in inputs:
                 values.append(i.get())
 
             config_item.values = values
-            print(config_item.name, values)
+            config_item.on_apply(values)
 
 

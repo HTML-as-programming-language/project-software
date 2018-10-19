@@ -21,16 +21,16 @@ def test():
         time.sleep(1)
         b.client_maintenance()
 
-        for client, view in views.items():
-            if client not in b.clients.values():
-                del views[client]
+        delete = [client for client in views.keys() if client not in b.clients.values()]
+        for client in delete:
+            del views[client]
 
-        for name, client in b.clients:
+        for name, client in b.clients.items():
             if client not in views:
                 views[client] = ModuleView(client)
 
         myapp.update_modules(
-            views.values()
+            list(views.values())
         )
 
 
