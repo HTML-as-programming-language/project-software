@@ -1,5 +1,5 @@
 import glob
-from client import Client
+from backend.client import Client
 from multiprocessing import Queue
 from queue import Empty
 from time import sleep
