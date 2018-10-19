@@ -2,6 +2,7 @@ import time
 from threading import Thread
 from tkinter import *
 
+from backend.backend import Backend
 from gui.widgets.module_widget import ModuleWidget
 from gui.widgets.modules_list import ModulesList
 from module import Module
@@ -33,6 +34,11 @@ myapp.master.title("App")
 
 def test():
     time.sleep(1)
+    b = Backend()
+    b.client_maintenance()
+    for name, client in b.clients.items():
+        print(name, client)
+
     myapp.update_modules([
         Module(
             "harry", data={"light": "30%"},
