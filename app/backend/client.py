@@ -55,6 +55,7 @@ class Client:
             raise e
             return
 
+        self.initialized = False
         self.quit_queue = quit
 
         self.port = port
@@ -76,6 +77,7 @@ class Client:
 
                 try:
                     self.supported_sensors.append(SensorType(data))
+                    self.initialized = True
                 except ValueError:
                     print("unsupported sensor")
 

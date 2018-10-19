@@ -26,7 +26,7 @@ def test():
             del views[client]
 
         for name, client in b.clients.items():
-            if client not in views:
+            if client not in views and client.initialized:
                 views[client] = ModuleView(client)
 
         myapp.update_modules(
