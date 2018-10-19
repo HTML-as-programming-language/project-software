@@ -1,5 +1,18 @@
+from enum import Enum
+
 
 class Module:
+
+    class ConfigItem:
+
+        class Type(Enum):
+            MIN_MAX = 1
+            ONE_VALUE = 2
+
+        def __init__(self, name, config_type):
+            self.name = name
+            self.type = config_type
+            self.values = []
 
     def __init__(self, name, data=None, config=None, actions=None):
         self.name = name
@@ -21,3 +34,9 @@ class Module:
         }
         """
         return self.actions
+
+    def apply_config(self):
+        """
+        Called when config is changed
+        """
+        pass
