@@ -1,9 +1,9 @@
+import sys
 import time
 from threading import Thread
 
 from backend.backend import Backend
 from gui.gui_app import GUI
-from backend.client import SensorType
 
 # create the application
 from moduleview import ModuleView
@@ -11,9 +11,10 @@ from moduleview import ModuleView
 myapp = GUI()
 
 myapp.master.title("App")
+myapp.master.protocol("WM_DELETE_WINDOW", lambda: myapp.master.destroy())
 
 
-def test():
+def controller():
     b = Backend()
     views = {}
 
@@ -34,7 +35,10 @@ def test():
         )
 
 
-Thread(target=test).start()
+thread = Thread(target=controller)
+thread.daemon = True
+thread.start()
 
 # start the program
 myapp.mainloop()
+sys.exit(0)
