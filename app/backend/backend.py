@@ -11,7 +11,7 @@ class Backend:
         self.clients = {}
         self.client_stop_queue = Queue()
 
-    def check_new_clients(self):
+    def __check_new_clients(self):
         ports = glob.glob('/dev/ttyACM[0-9]*')
 
         for port in ports:
@@ -29,7 +29,7 @@ class Backend:
         # TODO: Cleanup disconnected/inactive clients.
         # Give Clients a queue to send a message to when they finish.
 
-    def check_quit_queue(self):
+    def __check_quit_queue(self):
         while True:
             try:
                 port = self.client_stop_queue.get(block=False)
@@ -41,8 +41,9 @@ class Backend:
                 break
 
     def client_maintenance(self):
-        self.check_quit_queue()
-        self.check_new_clients()
+        self.__check_quit_queue()
+        self.__check_new_clients()
+
 
 if __name__ == "__main__":
     b = Backend()

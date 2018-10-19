@@ -1,6 +1,6 @@
 from tkinter import Frame, Label, Entry, Button, END
 
-from module import Module
+from moduleview import ModuleView
 
 BG = "#d0d9e5"
 
@@ -21,7 +21,7 @@ class ModuleConfig(Frame):
 
             self.inputs[config_item] = [textbox]
 
-            if config_item.type is Module.ConfigItem.Type.MIN_MAX:
+            if config_item.type is ModuleView.ConfigItem.Type.MIN_MAX:
                 # add second textbox
                 textbox1 = Entry(self)
                 textbox1.grid(column=2, row=row)
@@ -44,5 +44,4 @@ class ModuleConfig(Frame):
             config_item.values = values
             print(config_item.name, values)
 
-        self.module.apply_config()
 
