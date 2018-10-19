@@ -2,7 +2,7 @@ import time
 from threading import Thread
 from tkinter import *
 
-from backend import Backend
+from backend.backend import Backend
 from gui.widgets.module_widget import ModuleWidget
 from gui.widgets.modules_list import ModulesList
 from module import Module

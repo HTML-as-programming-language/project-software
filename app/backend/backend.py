@@ -44,12 +44,13 @@ class Backend:
         self.check_quit_queue()
         self.check_new_clients()
 
-b = Backend()
+if __name__ == "__main__":
+    b = Backend()
 
-while True:
-    b.client_maintenance()
-    sleep(1)
+    while True:
+        b.client_maintenance()
+        sleep(1)
 
-    for _, c in b.clients.items():
-        c.set_threshold_open_temperature(80)
-        c.open_hatch()
+        for _, c in b.clients.items():
+            c.set_threshold_open_temperature(80)
+            c.open_hatch()
