@@ -37,7 +37,7 @@ def test():
         Module(
             "harry", data={"light": "30%"},
             actions={
-                "doe iets": lambda: print("doe iets!?!?!"),
+                "naar boven": lambda: print("doe iets!?!?!"),
                 "doe iets anders": lambda: print("doe iets anders!?!?!")
             }
         ),
