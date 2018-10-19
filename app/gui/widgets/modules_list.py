@@ -13,7 +13,7 @@ class ModulesList(Listbox):
     def poll(self):
         self.after(20, self.poll)
         cs = self.curselection()
-        if cs != self.prev_curselection:
+        if cs != self.prev_curselection and len(cs) >= 1:
             self.on_selection_changed(self.modules[cs[0]])
         self.prev_curselection = cs
 

@@ -20,16 +20,14 @@ class ModuleWidget(tkinter.Frame):
         # will be created when module is selected
         self.module_data = None
         self.module_actions = None
+        self.module_config = None
 
         self.data_and_actions_frame.columnconfigure(0, weight=1)
         self.data_and_actions_frame.columnconfigure(1, weight=1)
         self.data_and_actions_frame.rowconfigure(0, weight=1)
         self.data_and_actions_frame.grid(column=0, row=1, sticky="nesw")
 
-        self.module_config = ModuleConfig(self)
-
         self.rowconfigure(1, weight=1)
-        self.module_config.grid(column=0, row=2, sticky="nesw")
         self.rowconfigure(2, weight=1)
         self.columnconfigure(0, weight=1)
 
@@ -40,6 +38,9 @@ class ModuleWidget(tkinter.Frame):
 
         self.module_actions = ModuleActions(self.data_and_actions_frame, module)
         self.module_actions.grid(column=1, row=0, sticky="nesw")
+
+        self.module_config = ModuleConfig(self, module)
+        self.module_config.grid(column=0, row=2, sticky="nesw")
 
     def update_module_data(self, module):
         if self.module_data:

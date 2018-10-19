@@ -54,6 +54,20 @@ def test():
             actions={
                 "doe iets": lambda: print("doe iets!?!?!"),
                 "doe iets anders": lambda: print("doe iets anders!?!?!")
+            },
+            config={
+                "temp0": Module.ConfigItem(
+                    "Min. and max. temperature",
+                    Module.ConfigItem.Type.MIN_MAX
+                ),
+                "temp1": Module.ConfigItem(
+                    "Something else?!?!?!",
+                    Module.ConfigItem.Type.MIN_MAX
+                ),
+                "temp2": Module.ConfigItem(
+                    "Something..",
+                    Module.ConfigItem.Type.ONE_VALUE
+                ),
             }
         )
     ])
