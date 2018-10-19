@@ -41,6 +41,7 @@ class ModuleWidget(tkinter.Frame):
 
         self.module_config = ModuleConfig(self, module)
         self.module_config.grid(column=0, row=2, sticky="nesw")
+        self.after(100, self.update_module_data, module)
 
     def update_module_data(self, module):
         if self.module_data:
