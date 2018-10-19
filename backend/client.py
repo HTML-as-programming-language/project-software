@@ -12,8 +12,16 @@ class SensorType(Enum):
 
 class Client:
     """
-    Client is a module: an device connected to this computer by UART
+    Client is a module; an device connected to this computer by UART
     and controlling a hatch based on data from its sensor(s).
+    """
+
+    """
+    TODO:
+     - implement send pid 11
+     - implement send pid 12
+     - implement send pid 13
+     - implement send pid 14
     """
 
     #connection = None
@@ -29,6 +37,10 @@ class Client:
     write_queue = None
 
     class WriteReq:
+        """
+        WriteReq is a struct which contains information needed to send a
+        packet.
+        """
         def __init__(self, pid, data=0):
             self.pid = pid
             self.data = data
@@ -41,6 +53,8 @@ class Client:
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.EIGHTBITS
             )
+
+        self.port = port
 
         self.supported_sensors = []
         self.current_temp = 0
@@ -115,9 +129,15 @@ class Client:
 
     
     def open_hatch(self):
+        """
+        Send packet to open the hatch (packet 51).
+        """
+
         self.write_queue.put(Client.WriteReq(51))
-        pass
 
     def close_hatch(self):
+        """
+        Send packet to close the hatch (packet 52).
+        """
+
         self.write_queue.put(Client.WriteReq(52))
-        pass

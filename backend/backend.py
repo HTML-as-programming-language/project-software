@@ -2,10 +2,10 @@ import glob
 from client import Client
 
 class Backend:
-    #clients = []
+    #clients = {}
 
     def __init__(self):
-        self.clients = []
+        self.clients = {}
 
     def find_ports(self):
         ports = glob.glob('/dev/ttyACM[0-9]*')
@@ -16,12 +16,14 @@ class Backend:
             found.append(port)
             if port not in self.clients:
                 c = Client(port)
-                self.clients.append(c)
+                c.port = port
+                self.clients["port"] = c
         
         # TODO: Cleanup disconnected/inactive clients.
+        # Give Clients a queue to send a message to when they finish.
 
 b = Backend()
 b.find_ports()
 
-for c in b.clients:
+for _, c in b.clients.items():
     c.open_hatch()
