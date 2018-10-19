@@ -175,17 +175,17 @@ class Client:
     def set_threshold_open_lightintensity(self, temp):
         """
         Send packet to set the threshold light intensity to open the
-        latch (packet 11).
+        latch (packet 13).
 
         temp: int percentage of light intensity.
         """
 
         self.write_queue.put(Client.WriteReq(13, temp))
 
-    def set_threshold_close_temperature(self, temp):
+    def set_threshold_close_lightintensity(self, temp):
         """
         Send packet to set the threshold light intensity to close the
-        latch (packet 12).
+        latch (packet 14).
 
         temp: int percentage of ligt intensity.
         """
