@@ -1,4 +1,8 @@
 import subprocess
+import os 
+from shutil import which # crossplatform python 3.3
+
+
 
 ###############
 ## __LINUX___##
@@ -18,10 +22,16 @@ import subprocess
 """sudo apt-get install default-jre"""
 
 
-print("")
-print("******************************************************************")
-print("*  It May take multiple minuts to install all requiret software  *")
-print("******************************************************************\n\n")
-# subprocess.call(['./install.sh'])
 
-
+# linux install  or  windows install
+if which("emcc") is None  or  which("em++") is None:
+    if os.path.isdir("./emsdk") == False:
+        print("")
+        print("******************************************************************")
+        print("*  It May take multiple minuts to install all requiret software  *")
+        print("******************************************************************\n\n")
+        subprocess.call(['./install.sh'])
+    else:
+        print("Something went wrong during the last installation, please install emscripten by hand")
+else:
+    print("Everything is installed and ready to go")
