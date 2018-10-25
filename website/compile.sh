@@ -1,0 +1,1 @@
+emcc ./src/$1.screen.c -O0 -o templates/screens/$1/$1.js

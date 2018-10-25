@@ -32,6 +32,6 @@ if which("emcc") is None  or  which("em++") is None:
         print("******************************************************************\n\n")
         subprocess.call(['./install.sh'])
     else:
-        print("Something went wrong during the last installation, please install emscripten by hand")
+        subprocess.call(['./reactivate.sh'])
 else:
     print("Everything is installed and ready to go")
