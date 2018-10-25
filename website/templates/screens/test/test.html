@@ -29,6 +29,11 @@
 
     <script async type="text/javascript" src="../../screens.js"></script>
     <script async type="text/javascript" src="test.js"></script>
+    <script type="text/javascript">
+      window.addEventListener('error', function(e) {
+        if (e.target.src === "http://localhost:5003/screen/test.js") { window.location.href = '?compile=true'; }
+      }, true);
+    </script>
   </body>
 </html>
 
