@@ -1,14 +1,13 @@
 import subprocess
-import os 
-from shutil import which # crossplatform python 3.3
+import os
+from shutil import which  # crossplatform python 3.3
 
 
+# LINUX
 
-###############
-## __LINUX___##
-###############
-
-# Git, Python, node.js, CMake, and Java are not provided by emsdk. The user is expected to install these beforehand with the system package manager:
+# Git, Python, node.js, CMake, and Java are not provided by emsdk.
+# The user is expected to install these beforehand with the
+# system package manager:
 
 # # Install git
 """sudo apt-get install git-core"""
@@ -22,14 +21,13 @@ from shutil import which # crossplatform python 3.3
 """sudo apt-get install default-jre"""
 
 
-
 # linux install  or  windows install
-if which("emcc") is None  or  which("em++") is None:
-    if os.path.isdir("./emsdk") == False:
+if which("emcc") is None or which("em++") is None:
+    if not os.path.isdir("./emsdk"):
         print("")
-        print("******************************************************************")
-        print("*  It May take multiple minuts to install all requiret software  *")
-        print("******************************************************************\n\n")
+        print("*********************************************")
+        print("*  It May take multiple minutes to install  *")
+        print("*********************************************\n\n")
         subprocess.call(['./install.sh'])
     else:
         subprocess.call(['./reactivate.sh'])

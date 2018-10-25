@@ -23,7 +23,7 @@ def screens(path):
     screenname = path.split(".")[0]
     if request.args.get('compile') == "true":
         compile_screen(screenname)
-        
+
     if "." in path:
         return send_from_directory("templates/screens/"+screenname, path)
     else:
