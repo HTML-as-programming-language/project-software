@@ -90,4 +90,9 @@ canvas.emscripten { border: 0px none; background-color: black; }
     color: white;
     font-family: 'Lucida Console', Monaco, monospace;
     outline: none;
+    max-width: 100%;
+}
+
+canvas {
+    min-width: 40%;
 }

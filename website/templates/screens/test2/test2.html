@@ -11,9 +11,10 @@
     <div class="emscripten" id="status">We are Downloading the assemblies...</div>
 
     <span id='controls'>
-        <span><input type="checkbox" id="resize">Resize canvas</span>
-        <span><input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;</span>
-        <span><input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)"></span>
+      <span><input type="checkbox" id="resize">Resize canvas</span>
+      <span><input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;</span>
+      <span><input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)"></span>
+      <span><input type="button" value="Compile - This takes a few seconds" onclick="window.location.href = '?compile=true'"></span> <!--TODO: spinner-->
     </span>
 
     <div class="emscripten">
@@ -22,7 +23,7 @@
 
     
     <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+      <canvas class="emscripten" id="canvas"></canvas>
     </div>
     <textarea id="output" rows="8"></textarea>
 

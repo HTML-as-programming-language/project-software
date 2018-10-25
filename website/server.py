@@ -1,10 +1,13 @@
 from flask import Flask, render_template, send_from_directory, request
 import subprocess
+from shutil import which  # crossplatform python 3.3
 app = Flask(__name__)
 
 
 def compile_screen(screenname):
-    subprocess.call('./reactivate.sh', shell=True)
+    if which("emcc") is None or which("em++") is None:
+        subprocess.call('./reactivate.sh', shell=True)
+
     subprocess.call('./compile.sh ' + screenname, shell=True)
 
 
