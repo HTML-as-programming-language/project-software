@@ -1,17 +1,23 @@
 from backend import Backend
 from time import sleep
+import threading
 
 import api
 
 b = Backend()
 
+def client_maintenance():
+    while True:
+        b.client_maintenance()
+        sleep(1)
 
-#while True:
-b.client_maintenance()
-sleep(1)
+maintenance_thread = threading.Thread(target=client_maintenance)
+maintenance_thread.daemon = True
+maintenance_thread.start()
 
-for _, c in b.clients.items():
-    c.set_threshold_open_temperature(80)
-    c.open_hatch()
+api.set_backend(b)
 
-api.app.run(debug=True, port=8080)
+api.app.run(
+    debug=True,
+    port=8080,
+)
