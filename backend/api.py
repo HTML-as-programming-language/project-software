@@ -7,7 +7,7 @@ class Client:
         self.callback = callback
         self.last_keep_alive = datetime.datetime.now()
 
-clients = []
+clients = {}
 
 app = Flask(__name__)
 
@@ -32,8 +32,11 @@ def init():
     if not content:
         return json_err("no callback given")
 
+    if content in clients:
+        return json_err("callback already exists")
+
     c = Client(content)
-    clients.append(c)
+    clients[content] = c
 
     # TODO: Return current modules.
 
@@ -41,13 +44,28 @@ def init():
         "modules": [format_module(m) for m in _b.clients]
     })
 
-@app.route("/module/<module_id>", methods=["post"])
-def st00fs(module_id):
-    print(module_id)
-    return ""
+@app.route("/keepalive")
+def keep_alive():
+    content = ""
+    try:
+        content = request.get_json(force=True)
+    except:
+        pass
+
+    if not content:
+        return json_err("endpoint not given")
+
+    if content not in clients:
+        return json_err("given endpoint not known")
+
+    clients[content].last_keep_alive = datetime.datetime.now()
+    
+    return jsonify(True)
 
 @app.route("/module/<module_id>/setting/<setting_key>", methods=["post"])
 def module_setting_set(module_id, setting_key):
+    client_maintenance()
+
     content = ""
     try:
         content = request.get_json(force=True)
@@ -69,6 +87,8 @@ def module_setting_set(module_id, setting_key):
 
 @app.route("/module/<module_id>/sensor/<sensor_id>/<sensor_setting_key>", methods=["post"])
 def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
+    client_maintenance()
+
     content = ""
     try:
         content = request.get_json(force=True)
@@ -95,6 +115,22 @@ def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
 
     return jsonify(True)
 
+def client_maintenance():
+    now = datetime.datetime.now()
+
+    to_rem = []
+
+    for key, c in clients.items():
+        diff = now - c.last_keep_alive
+        print(diff.seconds)
+        if diff.seconds > 15:
+            print("Remove inactive client:", c.callback)
+
+            to_rem.append(key)
+
+    for c in to_rem:
+        del clients[c]
+
 def format_module(m):
     return {
         "id": m.port,
@@ -109,4 +145,5 @@ def format_module_sensor(m):
     return {}
 
 def json_err(msg):
+    # TODO: return HTTP error code.
     return '{"error": "' + msg + '"}\n'
