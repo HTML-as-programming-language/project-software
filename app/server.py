@@ -1,7 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template, send_from_directory
 app = Flask(__name__)
 
-from flask import render_template, send_from_directory
+
+from jinja2 import Environment
+from hamlish_jinja import HamlishExtension
+
+env = Environment(extensions=[HamlishExtension])
 
 
 @app.route("/")
@@ -17,12 +21,6 @@ def module_id():
 def module():
     return render_template('dashboard.html', title='Dashboard')
 
-
-# @app.route('/get_current_user')
-# def get_current_user():
-#     return jsonify(username=g.user.username,
-#                    email=g.user.email,
-#                    id=g.user.id)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
