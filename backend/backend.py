@@ -1,5 +1,4 @@
 import glob
-from backend.client import Client
 from multiprocessing import Queue
 from queue import Empty
 from time import sleep
@@ -54,15 +53,3 @@ class Backend:
     def client_maintenance(self):
         self.__check_quit_queue()
         self.__check_new_clients()
-
-
-if __name__ == "__main__":
-    b = Backend()
-
-    while True:
-        b.client_maintenance()
-        sleep(1)
-
-        for _, c in b.clients.items():
-            c.set_threshold_open_temperature(80)
-            c.open_hatch()
