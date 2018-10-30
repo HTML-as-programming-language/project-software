@@ -5,7 +5,6 @@ from gui.widgets.modules_list import ModulesList
 
 
 class GUI(Frame):
-
     def __init__(self, master=None):
         super().__init__(master)
         self.modules_list = ModulesList(self, self.on_module_select)
@@ -21,4 +20,16 @@ class GUI(Frame):
     def update_modules(self, modules):
         self.modules_list.update_list(modules)
 
+    def show_connection_error(self, msg=""):
+        win = Toplevel()
+        win.wm_title("Error")
+
+        l = Label(win, text="Error connecting to server")
+        l.grid(row=0, column=0)
+
+        l2 = Label(win, text=msg)
+        l2.grid(row=1, column=0)
+
+        b = Button(win, text="Quit", command=self.quit)
+        b.grid(row=3, column=0)
 

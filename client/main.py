@@ -1,12 +1,14 @@
 import sys
 import time
-import requests
 from threading import Thread
+
+import backend
 
 from gui.gui_app import GUI
 
 # create the application
 from moduleview import ModuleView
+
 
 myapp = GUI()
 
@@ -15,15 +17,18 @@ myapp.master.protocol("WM_DELETE_WINDOW", lambda: myapp.master.destroy())
 
 API = "http://127.0.0.1:8080"
 
+b = backend.Backend(API, myapp.show_connection_error)
+backend.instance = b
+
 def controller():
     views = {}
 
-    r = requests.post(API + "/init", data='"http://127.0.0.1:8081"')
-    if r.status_code is not 200:
-        print("cannot init:", r.status_code)
-        sys.exit(0)
+    r = b.init()
+    if r is None:
+        return
 
     data = r.json()
+    print(data)
 
     for m in data["modules"]:
         views[m["id"]] = ModuleView(m)

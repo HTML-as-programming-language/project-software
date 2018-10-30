@@ -62,6 +62,6 @@ class ModuleView:
         }
         """
         return {
-            "Open": None,
-            "Close": None
+            "Open": lambda: backend.instance.set_module_setting("hatch_force", 1),
+            "Close": lambda: backend.instance.set_module_setting("hatch_force", 0)
         }
