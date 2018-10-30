@@ -43,7 +43,7 @@ class Client:
             self.pid = pid
             self.data = data
 
-    def __init__(self, port, baud_rate=9600, quit=None):
+    def __init__(self, name, port, baud_rate=9600, quit=None):
         try:
             self.connection = serial.Serial(
                 port=port,
@@ -59,6 +59,7 @@ class Client:
         self.initialized = False
         self.quit_queue = quit
 
+        self.name = name
         self.port = port
 
         self.supported_sensors = []
@@ -134,7 +135,7 @@ class Client:
             except OSError as e:
                 print("OSError :<", e)
                 if self.quit_queue:
-                    self.quit_queue.put(self.port)
+                    self.quit_queue.put(self.name)
                 return
 
     

@@ -30,7 +30,7 @@ class Backend:
 
             if name not in self.clients:
                 try:
-                    c = Client(port, quit=self.client_stop_queue)
+                    c = Client(name, port, quit=self.client_stop_queue)
                     c.port = port
                 except SerialException as e:
                     # print("Could not add client:", port, e)
@@ -40,17 +40,15 @@ class Backend:
                 self.clients[name] = c
                 print("Added client:", port)
         
-        # TODO: Cleanup disconnected/inactive clients.
-        # Give Clients a queue to send a message to when they finish.
-
     def __check_quit_queue(self):
         while True:
             try:
                 port = self.client_stop_queue.get(block=False)
                 if port is None:
                     break
-                del self.clients[port]
-                print("Removed client:", port)
+                if port in self.clients:
+                    del self.clients[port]
+                    print("Removed client:", port)
             except Empty:
                 break
 
