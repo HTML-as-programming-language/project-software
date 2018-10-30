@@ -1,8 +1,8 @@
 import sys
 import time
+import requests
 from threading import Thread
 
-from backend.backend import Backend
 from gui.gui_app import GUI
 
 # create the application
@@ -13,27 +13,24 @@ myapp = GUI()
 myapp.master.title("App")
 myapp.master.protocol("WM_DELETE_WINDOW", lambda: myapp.master.destroy())
 
+API = "http://127.0.0.1:8080"
 
 def controller():
-    b = Backend()
     views = {}
 
-    while True:
-        time.sleep(1)
-        b.client_maintenance()
+    r = requests.post(API + "/init", data='"http://127.0.0.1:8081"')
+    if r.status_code is not 200:
+        print("cannot init:", r.status_code)
+        sys.exit(0)
 
-        delete = [client for client in views.keys() if client not in b.clients.values()]
-        for client in delete:
-            del views[client]
+    data = r.json()
 
-        for name, client in b.clients.items():
-            if client not in views and client.initialized:
-                views[client] = ModuleView(client)
+    for m in data["modules"]:
+        views[m["id"]] = ModuleView(m)
 
-        myapp.update_modules(
-            list(views.values())
-        )
-
+    myapp.update_modules(
+        list(views.values())
+    )
 
 thread = Thread(target=controller)
 thread.daemon = True

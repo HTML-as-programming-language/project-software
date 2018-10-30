@@ -2,7 +2,6 @@ from tkinter import *
 
 
 class ModulesList(Listbox):
-
     def __init__(self, master, on_selection_changed):
         super().__init__(master, borderwidth="2", relief="ridge", selectmode="browse")
         self.on_selection_changed = on_selection_changed
@@ -23,4 +22,4 @@ class ModulesList(Listbox):
 
         self.delete(0)
         for module in modules:
-            self.insert(0, module.client.port)
+            self.insert(0, module.module["label"])
