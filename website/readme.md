@@ -3,18 +3,21 @@
 ## DEVELOPMENT - Installation
 ~~~~shell
 $ pip install Flask
-$ export FLASK_APP=server.py
-
 ~~~~
 
-We recommend to enable the debug modus of flask. This automaticly relaods your code when you save one of your files.
+2 options: Just the server or start the server + livereloading
+
+
+1. Now start the server by running.
 
 ~~~~shell
-$ export FLASK_DEBUG=1
+$ python server.py
 ~~~~
 
-Now start the server by running.
 
+2. Or start the server + livereloading
 ~~~~shell
-$ flask run
+$ npm install
+$ npm install -g gulp
+$ gulp
 ~~~~
