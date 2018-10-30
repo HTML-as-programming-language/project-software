@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import datetime
+from client import SensorType
 
 
 class Client:
@@ -41,7 +42,7 @@ def init():
     # TODO: Return current modules.
 
     return jsonify({
-        "modules": [format_module(m) for m in _b.clients]
+        "modules": [format_module(key, m) for key, m in _b.clients.items()]
     })
 
 @app.route("/keepalive")
@@ -76,7 +77,7 @@ def module_setting_set(module_id, setting_key):
         return json_err("module does not exist")
 
     if setting_key == "hatch_force":
-        if content == "true":
+        if content:
             _b.clients[module_id].open_hatch()
         else:
             _b.clients[module_id].close_hatch()
@@ -131,18 +132,53 @@ def client_maintenance():
     for c in to_rem:
         del clients[c]
 
-def format_module(m):
+def format_module(mid, m):
     return {
-        "id": m.port,
+        "id": mid,
         "label": m.port,
         "data": {
             "hatch_status": m.current_pos,
         },
-        "sensors": [format_module_sensor(s)],
+        "sensors": [format_module_sensor(stype, m) for stype in m.supported_sensors],
     }
 
-def format_module_sensor(m):
-    return {}
+def format_module_sensor(stype, m):
+    data = {}
+
+    if stype is SensorType.TEMP:
+        data["id"] = "0"
+        data["type"] = "TEMP"
+        data["label"] = "Temperature"
+        data["data"] = {
+            "temp": m.current_temp,
+            "label": str(m.current_temp) + "C"
+        }
+        data["settings"] = {
+            "id": "tempminmaxslider",
+            "label": "Temperature thresholds",
+            "type": "int",
+            "subtype": "minmax",
+            "min": 0,
+            "max": 30,
+        }
+    elif stype is SensorType.LIGHT:
+        data["id"] = "1"
+        data["type"] = "LIGHT"
+        data["label"] = "Light"
+        data["data"] = {
+            "temp": m.current_light,
+            "label": str(m.current_light) + "%"
+        }
+        data["settings"] = {
+            "id": "lightminmaxslider",
+            "label": "Light thresholds",
+            "type": "int",
+            "subtype": "minmax",
+            "min": 0,
+            "max": 100,
+        }
+
+    return data
 
 def json_err(msg):
     # TODO: return HTTP error code.

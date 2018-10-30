@@ -4,6 +4,7 @@ from queue import Empty
 from time import sleep
 import sys
 from serial.serialutil import SerialException
+from client import Client
 
 class Backend:
     #clients = {}
@@ -25,7 +26,9 @@ class Backend:
             raise EnvironmentError("Unsupported platform(?)")
 
         for port in ports:
-            if port not in self.clients:
+            name = port.replace("/", "")
+
+            if name not in self.clients:
                 try:
                     c = Client(port, quit=self.client_stop_queue)
                     c.port = port
@@ -33,7 +36,8 @@ class Backend:
                     # print("Could not add client:", port, e)
                     continue
 
-                self.clients[port] = c
+
+                self.clients[name] = c
                 print("Added client:", port)
         
         # TODO: Cleanup disconnected/inactive clients.

@@ -11,6 +11,7 @@ class SensorType(Enum):
     TEMP = 0
     LIGHT = 1
 
+
 class Client:
     """
     Client is a module; an device connected to this computer by UART
@@ -72,6 +73,7 @@ class Client:
 
     def run_serial_connection(self):
         def handle_data(pid, data):
+            print("incoming packet:", pid, data)
             if pid == 101:
                 # Initialisation
 
@@ -79,7 +81,7 @@ class Client:
                     self.supported_sensors.append(SensorType(data))
                     self.initialized = True
                 except ValueError:
-                    print("unsupported sensor")
+                    print("unsupported sensor:", data)
 
             elif pid == 102:
                 # Temperature update
@@ -114,23 +116,17 @@ class Client:
                             *item.pid.to_bytes(2, byteorder="big"),
                             *item.data.to_bytes(2, byteorder="big")])
                     self.connection.flush()
-                    print("donewrite")
                 else:
                     # Receive packet
                     data_in = self.connection.read(2)
-                    print(len(data_in), data_in)
                     int_data = int.from_bytes(data_in, byteorder="big")
-                    print("read", int_data)
                     if int_data == 0xffff:
-                        print("start packet")
                         # Start of a packet
                         next_is_id = True
                     elif next_is_id:
-                        print("get pid")
                         next_is_id = False
                         pid = int_data
                     elif pid:
-                        print("yey packet")
                         handle_data(pid, int_data)
                         pid = 0
             except OSError as e:
