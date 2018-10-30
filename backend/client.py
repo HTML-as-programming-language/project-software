@@ -78,6 +78,8 @@ class Client:
                 # Initialisation
 
                 try:
+                    if len(self.supported_sensors) > 5:
+                        return
                     self.supported_sensors.append(SensorType(data))
                     self.initialized = True
                 except ValueError:

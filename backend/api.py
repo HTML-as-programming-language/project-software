@@ -34,7 +34,9 @@ def init():
         return json_err("no callback given")
 
     if content in clients:
-        return json_err("callback already exists")
+        # TODO
+        #return json_err("callback already exists")
+        pass
 
     c = Client(content)
     clients[content] = c
@@ -137,6 +139,7 @@ def format_module(mid, m):
         "id": mid,
         "label": m.port,
         "data": {
+            "labelHatch open": str(m.current_pos) + "%",
             "hatch_status": m.current_pos,
         },
         "sensors": [format_module_sensor(stype, m) for stype in m.supported_sensors],
@@ -153,14 +156,15 @@ def format_module_sensor(stype, m):
             "temp": m.current_temp,
             "label": str(m.current_temp) + "C"
         }
-        data["settings"] = {
+        data["settings"] = []
+        data["settings"].append({
             "id": "tempminmaxslider",
             "label": "Temperature thresholds",
             "type": "int",
             "subtype": "minmax",
             "min": 0,
             "max": 30,
-        }
+        })
     elif stype is SensorType.LIGHT:
         data["id"] = "1"
         data["type"] = "LIGHT"
@@ -169,14 +173,15 @@ def format_module_sensor(stype, m):
             "temp": m.current_light,
             "label": str(m.current_light) + "%"
         }
-        data["settings"] = {
+        data["settings"] = []
+        data["settings"].append({
             "id": "lightminmaxslider",
             "label": "Light thresholds",
             "type": "int",
             "subtype": "minmax",
             "min": 0,
             "max": 100,
-        }
+        })
 
     return data
 
