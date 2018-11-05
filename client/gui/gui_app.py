@@ -20,6 +20,12 @@ class GUI(Frame):
     def update_modules(self, modules):
         self.modules_list.update_list(modules)
 
+    def add_module(self, module):
+        self.modules_list.add(module)
+
+    def remove_module(self, module_id):
+        self.modules_list.remove(module_id)
+
     def show_connection_error(self, msg=""):
         win = Toplevel()
         win.wm_title("Error")

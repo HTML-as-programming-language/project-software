@@ -9,6 +9,7 @@ from gui.gui_app import GUI
 # create the application
 from moduleview import ModuleView
 
+import api
 
 myapp = GUI()
 
@@ -40,6 +41,17 @@ def controller():
 thread = Thread(target=controller)
 thread.daemon = True
 thread.start()
+
+api.set_app(myapp)
+
+def webserver():
+    api.app.run(
+        debug=False,
+        port=8081)
+
+threadserv = Thread(target=webserver)
+threadserv.daemon = True
+threadserv.start()
 
 # start the program
 myapp.mainloop()

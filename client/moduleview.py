@@ -1,5 +1,6 @@
 import re
 from enum import Enum
+import backend
 
 def determine_config_type(type_str, sub_type=""):
     if type_str == "int":
@@ -44,12 +45,35 @@ class ModuleView:
         c = []
         for s in self.module["sensors"]:
             for sett in s["settings"]:
-                def on_apply():
-                    print("Applied")
+                typ = determine_config_type(sett["type"], sett.get("subtype", ""))
 
+                def on_apply(data):
+                    vals = []
+                    print("Applied")
+                    print(data)
+                    if typ == ModuleView.ConfigItem.Type.MIN_MAX:
+                        for x in data:
+                            val = 0
+                            try:
+                                val = int(x)
+                            except ValueError:
+                                print("not 0", x)
+                            vals.append(val)
+
+                    elif typ == ModuleView.ConfigItem.Type.ONE_VALUE:
+                        vals = int(data)
+                    else:
+                        vals = data
+
+                    backend.instance.set_module_sensor_setting(
+                            self.module["id"],
+                            s["id"],
+                            sett["id"],
+                            vals)
+                    
                 c.append(ModuleView.ConfigItem(
                     s["label"],
-                    determine_config_type(sett["type"], sett.get("subtype", "")),
+                    typ,
                     on_apply
                 ))
         return c
@@ -62,6 +86,6 @@ class ModuleView:
         }
         """
         return {
-            "Open": lambda: backend.instance.set_module_setting("hatch_force", 1),
-            "Close": lambda: backend.instance.set_module_setting("hatch_force", 0)
+            "Open": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 1),
+            "Close": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 0)
         }

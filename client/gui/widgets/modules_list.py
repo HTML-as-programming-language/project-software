@@ -23,3 +23,18 @@ class ModulesList(Listbox):
         self.delete(0)
         for module in modules:
             self.insert(0, module.module["label"])
+
+    def add(self, module):
+        self.modules.append(module)
+        self.insert(0, module.module["label"])
+
+    def remove(self, module_id):
+        index = None
+        for m, _ in enumerate(self.modules):
+            if self.modules[m].module["id"] == module_id:
+                index = m
+                break
+
+        del self.modules[index]
+
+        self.delete(index)
