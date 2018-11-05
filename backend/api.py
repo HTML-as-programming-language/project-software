@@ -101,13 +101,13 @@ def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
     if module_id not in _b.clients:
         return json_err("module does not exist")
 
-    if setting_key == "temp_threshold":
+    if sensor_setting_key == "temp_threshold":
         if type(content) is not list or len(content) < 2:
             return json_err("not two temps provided for temp")
             
         _b.clients[module_id].set_threshold_open_temperature(int(content[0]))
         _b.clients[module_id].set_threshold_close_temperature(int(content[1]))
-    elif setting_key == "light_threshold":
+    elif sensor_setting_key == "light_threshold":
         if type(content) is not list or len(content) < 2:
             return json_err("not two intensities provided for light")
             
@@ -158,7 +158,7 @@ def format_module_sensor(stype, m):
         }
         data["settings"] = []
         data["settings"].append({
-            "id": "tempminmaxslider",
+            "id": "temp_threshold",
             "label": "Temperature thresholds",
             "type": "int",
             "subtype": "minmax",
@@ -175,7 +175,7 @@ def format_module_sensor(stype, m):
         }
         data["settings"] = []
         data["settings"].append({
-            "id": "lightminmaxslider",
+            "id": "temp_threshold",
             "label": "Light thresholds",
             "type": "int",
             "subtype": "minmax",
@@ -187,4 +187,4 @@ def format_module_sensor(stype, m):
 
 def json_err(msg):
     # TODO: return HTTP error code.
-    return '{"error": "' + msg + '"}\n'
+    return '{"error": "' + msg + '"}\n', 400
