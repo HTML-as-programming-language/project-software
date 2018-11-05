@@ -10,4 +10,11 @@ AuditMixin will add automatic timestamp of created and modified by who
 
 
 """
-        
+
+
+class TestModel(Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True, nullable=False)
+
+    def __repr__(self):
+        return self.name
