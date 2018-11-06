@@ -230,3 +230,15 @@ class Client:
         """
 
         self.write_queue.put(Client.WriteReq(14, temp))
+
+    def disable_autonomus(self):
+        """
+        Send packet to disable autonomus function.
+        """
+        self.write_queue.put(Client.WriteReq(14, 1))
+
+    def enable_autonomus(self):
+        """
+        Send packet to enable autonomus function.
+        """
+        self.write_queue.put(Client.WriteReq(14, 0))

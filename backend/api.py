@@ -116,6 +116,11 @@ def module_setting_set(module_id, setting_key):
             _b.clients[module_id].open_hatch()
         else:
             _b.clients[module_id].close_hatch()
+    elif setting_key == "autonomus":
+        if content:
+            _b.clients[module_id].enable_autonomus()
+        else:
+            _b.clients[module_id].disable_autonomus()
     else:
         return json_err("unknown setting")
 
