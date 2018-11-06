@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import datetime
 from client import SensorType
 import requests
+import queue
 
 
 class Client:
@@ -9,7 +10,6 @@ class Client:
         self.callback = callback
         self.last_keep_alive = datetime.datetime.now()
 
-clients = {}
 
 app = Flask(__name__)
 
@@ -18,6 +18,31 @@ _b = None
 def set_backend(b):
     global _b
     _b = b
+
+
+class HandlerRequest:
+    def __init__(self, request_type, new=None, reply=None):
+        self.request_type = request_type
+        self.new = new
+        self.reply = reply
+
+request_queue = queue.Queue()
+
+def handler():
+    api_clients = []
+    while True:
+        r = request_queue.get()
+        print("api_clients:", api_clients)
+        if r.request_type == "append":
+            print("new api_client:", r.new)
+            api_clients.append(r.new)
+        elif r.request_type == "get":
+            cp = api_clients.copy()
+            print("cp:", cp)
+            r.reply.put(cp)
+        else:
+            print("uknown request type:", r.request_type, r)
+    return
 
 @app.route("/")
 def hello():
@@ -37,17 +62,16 @@ def init():
 
     content = content.replace('"', "")
 
-    if content in clients:
-        # TODO
-        #return json_err("callback already exists")
-        pass
+    #if content in clients:
+    # TODO
+    # return json_err("callback already exists")
+    # pass
 
     print("yo did is de content:", content)
 
-    c = Client(content)
-    clients[content] = c
-
-    # TODO: Return current modules.
+    #c = Client(content)
+    r = HandlerRequest("append", new=content)
+    request_queue.put(r)
 
     return jsonify({
         "modules": [format_module(key, m) for key, m in _b.clients.items()]
@@ -125,6 +149,8 @@ def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
     return jsonify(True)
 
 def client_maintenance():
+    return
+    # TODO
     now = datetime.datetime.now()
 
     to_rem = []
@@ -196,14 +222,24 @@ def json_err(msg):
     return '{"error": "' + msg + '"}\n', 400
 
 def send_request(endpoint, data=None):
-    for c in clients.values():
+    count = 0
+
+    reply = queue.Queue()
+    r = HandlerRequest("get", reply=reply)
+    request_queue.put(r)
+
+    cp = reply.get()
+
+    for i in cp:
         try:
-            r = requests.post(c.callback + endpoint, json=data)
+            r = requests.post(i + endpoint, json=data, timeout=0.2)
             if r.status_code is not 200:
                 print(r.status_code)
                 print(r.text)
                 return None
-            return r
+            count += 1
         except ConnectionError as e:
             print(e)
             return None
+
+    return count

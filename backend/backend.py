@@ -12,10 +12,10 @@ import api
 class Backend:
     #clients = {}
 
-    def __init__(self):
+    def __init__(self, state_change_queue):
         self.clients = {}
         self.client_stop_queue = Queue()
-        self.client_state_change_queue = Queue()
+        self.client_state_change_queue = state_change_queue
 
     def __check_new_clients(self):
         ports = []
@@ -61,29 +61,13 @@ class Backend:
                     del self.clients[port]
                     print("Removed client:", port)
 
+
                     api.send_request("/module/" + name + "/delete")
                     print("Informed api clients of removed module")
 
-            except Empty:
-                break
-    def __handle_state_changes(self):
-        while True:
-            try:
-                change = self.client_state_change_queue.get(block=False)
-                if change is None:
-                    break
-                url = "/module/"
-                if change.sensor_id is not None:    
-                    url += "/sensor/" + change.sensor_id + "/dataitem/" + change.data_item
-                else:
-                    url += "/dataitem/" + change.data_item
-
-                api.send_request(url, change.value)
-                print("Informed api clients of modified state", url, change.value)
             except Empty:
                 break
 
     def client_maintenance(self):
         self.__check_quit_queue()
         self.__check_new_clients()
-        self.__handle_state_changes()
