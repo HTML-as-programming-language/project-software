@@ -19,7 +19,7 @@ maintenance_thread.start()
 
 api.set_backend(b)
 
-api_thread = threading.Thread(target=api.handler)
+api_thread = threading.Thread(target=api.handler_api_clients)
 api_thread.start()
 
 def handle_state_change():
@@ -38,7 +38,9 @@ def handle_state_change():
 thread2 = threading.Thread(target=handle_state_change)
 thread2.start()
 
+print("MAIN!", __name__)
+
 api.app.run(
-    debug=True,
+    #debug=True,
     port=8080,
 )

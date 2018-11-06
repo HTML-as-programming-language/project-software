@@ -3,6 +3,8 @@ import datetime
 from client import SensorType
 import requests
 import queue
+import threading
+from requests.exceptions import ConnectionError
 
 
 class Client:
@@ -28,11 +30,12 @@ class HandlerRequest:
 
 request_queue = queue.Queue()
 
-def handler():
+def handler_api_clients():
+    print("handler_api_clients start")
     api_clients = []
     while True:
         r = request_queue.get()
-        print("api_clients:", api_clients)
+        print("api_clients:", api_clients, threading.get_ident())
         if r.request_type == "append":
             print("new api_client:", r.new)
             api_clients.append(r.new)
@@ -42,7 +45,7 @@ def handler():
             r.reply.put(cp)
         else:
             print("uknown request type:", r.request_type, r)
-    return
+    print("quit handler")
 
 @app.route("/")
 def hello():

@@ -6,6 +6,7 @@ from queue import Empty
 import select
 from time import sleep
 from serial.serialutil import SerialException
+import random
 
 class SensorType(Enum):
     TEMP = 0
@@ -98,13 +99,14 @@ class Client:
 
             elif pid == 102:
                 # Temperature update
+                #self.current_temp = random.randint(data, 100)
                 self.current_temp = data
 
                 # TODO: Also send update for "temp" value, not label.
                 change = StateChange(self.name)
                 change.sensor_id = "0"
                 change.data_item = "label"
-                change.value = str(data) + "C"
+                change.value = str(self.current_temp) + "C"
                 self.state_change_queue.put(change)
 
             elif pid == 103:
@@ -120,12 +122,13 @@ class Client:
 
             elif pid == 104:
                 # Current pos
+                #self.current_pos = random.randint(data, 100)
                 self.current_pos = data
 
                 # TODO: Also send update for "temp" value, not label.
                 change = StateChange(self.name)
                 change.data_item = "labelHatch open"
-                change.value = str(data) + "%"
+                change.value = str(self.current_pos) + "%"
                 self.state_change_queue.put(change)
 
             else:
