@@ -10,7 +10,7 @@ def set_app(a):
 
     _myapp = a
 
-@app.route("/module/<module_id>/add")
+@app.route("/module/<module_id>/add", methods=["post", "get"])
 def add_module(module_id):
     content = ""
     try:
@@ -23,9 +23,20 @@ def add_module(module_id):
 
     return jsonify(True)
 
-@app.route("/module/<module_id>/delete")
+@app.route("/module/<module_id>/delete", methods=["post", "get"])
 def delete_module(module_id):
     _myapp.remove_module(module_id)
 
     return jsonify(True)
 
+@app.route("/module/<module_id>/sensor/<sensor_id>/dataitem/<key>", methods=["post", "get"])
+def change_module_sensor_dataitem(module_id, sensor_id, key):
+    content = ""
+    try:
+        content = request.get_json(force=True)
+    except:
+        pass
+
+    _myapp.change_module_sensor_dataitem(module_id, sensor_id, key, content)
+
+    return jsonify(True)

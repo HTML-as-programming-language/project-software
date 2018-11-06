@@ -28,6 +28,19 @@ class ModulesList(Listbox):
         self.modules.append(module)
         self.insert(0, module.module["label"])
 
+    def change_sensor_dataitem(self, module_id, sensor_id, key, value):
+        for m in self.modules:
+            if m.module["id"] != module_id:
+                continue
+            for s in m.module["sensors"]:
+                if s["id"] != sensor_id:
+                    continue
+                s["data"][key] = value
+                return m
+        print("change_sensor_dataitem: unknown module or sensor:", module_id, sensor_id)
+        return None
+
+
     def remove(self, module_id):
         index = None
         for m, _ in enumerate(self.modules):

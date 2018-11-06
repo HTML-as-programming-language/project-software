@@ -14,8 +14,12 @@ class GUI(Frame):
         self.module_widget.pack(side=RIGHT, fill=BOTH, expand=True)
         self.pack(fill=BOTH, expand=True)
 
+        self.shown_module = None
+
     def on_module_select(self, module):
+        print(module)
         self.module_widget.show_module(module)
+        self.shown_module = module.module["id"]
 
     def update_modules(self, modules):
         self.modules_list.update_list(modules)
@@ -25,6 +29,12 @@ class GUI(Frame):
 
     def remove_module(self, module_id):
         self.modules_list.remove(module_id)
+
+    def change_module_sensor_dataitem(self, module_id, sensor_id, key, value):
+        m = self.modules_list.change_sensor_dataitem(module_id, sensor_id, key, value)
+
+        if m and self.shown_module == m.module["id"]:
+            self.module_widget.show_module(m)
 
     def show_connection_error(self, msg=""):
         win = Toplevel()
