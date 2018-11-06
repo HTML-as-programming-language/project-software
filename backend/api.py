@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import datetime
 from client import SensorType
+import requests
 
 
 class Client:
@@ -33,10 +34,15 @@ def init():
     if not content:
         return json_err("no callback given")
 
+
+    content = content.replace('"', "")
+
     if content in clients:
         # TODO
         #return json_err("callback already exists")
         pass
+
+    print("yo did is de content:", content)
 
     c = Client(content)
     clients[content] = c
@@ -170,7 +176,7 @@ def format_module_sensor(stype, m):
         data["type"] = "LIGHT"
         data["label"] = "Light"
         data["data"] = {
-            "temp": m.current_light,
+            "light": m.current_light,
             "label": str(m.current_light) + "%"
         }
         data["settings"] = []
@@ -188,3 +194,16 @@ def format_module_sensor(stype, m):
 def json_err(msg):
     # TODO: return HTTP error code.
     return '{"error": "' + msg + '"}\n', 400
+
+def send_request(endpoint, data=None):
+    for c in clients.values():
+        try:
+            r = requests.post(c.callback + endpoint, json=data)
+            if r.status_code is not 200:
+                print(r.status_code)
+                print(r.text)
+                return None
+            return r
+        except ConnectionError as e:
+            print(e)
+            return None

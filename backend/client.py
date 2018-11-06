@@ -11,6 +11,12 @@ class SensorType(Enum):
     TEMP = 0
     LIGHT = 1
 
+class StateChange:
+    def __init__(self, module_id):
+        self.module_id = module_id
+        self.sensor_id = None
+        self.data_item = None
+        self.value = None
 
 class Client:
     """
@@ -43,7 +49,7 @@ class Client:
             self.pid = pid
             self.data = data
 
-    def __init__(self, name, port, baud_rate=9600, quit=None):
+    def __init__(self, name, port, baud_rate=9600, quit=None, state_change=None):
         try:
             self.connection = serial.Serial(
                 port=port,
@@ -58,6 +64,7 @@ class Client:
 
         self.initialized = False
         self.quit_queue = quit
+        self.state_change_queue = state_change
 
         self.name = name
         self.port = port
@@ -73,10 +80,13 @@ class Client:
         self.thread.start()
 
     def run_serial_connection(self):
+        print("run serial connection")
         def handle_data(pid, data):
             print("incoming packet:", pid, data)
+
             if pid == 101:
                 # Initialisation
+                # TODO: Send add packet here
 
                 try:
                     if len(self.supported_sensors) > 5:
@@ -89,14 +99,39 @@ class Client:
             elif pid == 102:
                 # Temperature update
                 self.current_temp = data
+
+                # TODO: Also send update for "temp" value, not label.
+                change = StateChange(self.name)
+                change.sensor_id = "0"
+                change.data_item = "label"
+                change.value = str(data) + "C"
+                self.state_change_queue.put(change)
+
             elif pid == 103:
                 # Light update
                 self.current_light = data
+
+                # TODO: Also send update for "temp" value, not label.
+                change = StateChange(self.name)
+                change.sensor_id = "1"
+                change.data_item = "label"
+                change.value = str(data) + "%"
+                self.state_change_queue.put(change)
+
             elif pid == 104:
                 # Current pos
                 self.current_pos = data
+
+                # TODO: Also send update for "temp" value, not label.
+                change = StateChange(self.name)
+                change.data_item = "labelHatch open"
+                change.value = str(data) + "%"
+                self.state_change_queue.put(change)
+
             else:
                 print("unknown packet id:", pid)
+
+
 
         next_is_id = False
         pid = 0

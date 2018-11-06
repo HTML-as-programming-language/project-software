@@ -17,6 +17,34 @@ void loop()
 
   Serial.write(0x00);
   Serial.write(0x00);
+  
+  Serial.write(0xff);
+  Serial.write(0xff);
+
+  Serial.write(0x00);
+  Serial.write(0x66);
+
+  Serial.write(0x00);
+  Serial.write(0x10);
+  
+  Serial.write(0xff);
+  Serial.write(0xff);
+
+  Serial.write(0x00);
+  Serial.write(0x67);
+
+  Serial.write(0x00);
+  Serial.write(0x12);
+  
+  Serial.write(0xff);
+  Serial.write(0xff);
+
+  Serial.write(0x00);
+  Serial.write(0x68);
+
+  Serial.write(0x00);
+  Serial.write(0x08);
+
 
   /*Serial.write(0);
   Serial.write(0);
