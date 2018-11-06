@@ -29,6 +29,7 @@ class ModuleView:
         Should return a dictionary full of human readable data
         """
 
+
         d = {}
         for key, value in self.module["data"].items():
             if key.startswith("label"):
@@ -39,6 +40,9 @@ class ModuleView:
                 if key.startswith("label"):
                     d[s["label"] + " " + key[5:]] = value
             
+
+        print("GET READABLE DATA DICT", d)
+        print(self.module["sensors"])
         return d
 
     def get_config_items(self):

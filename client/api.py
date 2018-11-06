@@ -40,3 +40,15 @@ def change_module_sensor_dataitem(module_id, sensor_id, key):
     _myapp.change_module_sensor_dataitem(module_id, sensor_id, key, content)
 
     return jsonify(True)
+
+@app.route("/module/<module_id>/dataitem/<key>", methods=["post", "get"])
+def change_module_dataitem(module_id, key):
+    content = ""
+    try:
+        content = request.get_json(force=True)
+    except:
+        pass
+
+    _myapp.change_module_dataitem(module_id, key, content)
+
+    return jsonify(True)

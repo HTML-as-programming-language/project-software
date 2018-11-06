@@ -35,9 +35,22 @@ class ModulesList(Listbox):
             for s in m.module["sensors"]:
                 if s["id"] != sensor_id:
                     continue
+                print("new value:", key, value)
+                print("old value:", s["data"][key])
+                print(s["data"])
                 s["data"][key] = value
-                return m
+            return m
         print("change_sensor_dataitem: unknown module or sensor:", module_id, sensor_id)
+        return None
+
+    def change_dataitem(self, module_id, key, value):
+        for m in self.modules:
+            if m.module["id"] != module_id:
+                continue
+            print("new value:", key, value)
+            m.module["data"][key] = value
+            return m
+        print("change_dataitem: unknown module or sensor:", module_id)
         return None
 
 
