@@ -1,5 +1,6 @@
 import json
 
+import requests
 from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO, emit
 from threading import Thread, Event
@@ -44,9 +45,13 @@ class RandomThread(Thread):
         self.init()
 
 
-# @socketio.on('my event')
-# def handle_message(message):
-#     print('\n\n\nreceived message: ', message, "\n\n\n\n")
+@socketio.on('request')
+def handle_message(message):
+    requests.post('http://localhost:8080/'+str(message["path"]), json=message["body"])
+    print("\n\n\n")
+    print(type(message), message)
+    print("\n\n\n")
+
 
 
 @socketio.on('connect')
