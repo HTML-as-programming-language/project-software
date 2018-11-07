@@ -183,6 +183,9 @@ def format_module(mid, m):
             "hatch_status": m.current_pos,
             "labelDistance": str(m.current_distance) + "cm",
             "distance": m.current_distance,
+            "labelAutomatic": str(m.is_automatic),
+            "automatic": m.is_automatic,
+
         },
         "sensors": [format_module_sensor(stype, m) for stype in m.supported_sensors],
     }

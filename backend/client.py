@@ -104,6 +104,8 @@ class Client:
         self.current_pos = 0
         self.current_distance = 0
 
+        self.is_automatic = True
+
         self.write_queue = Queue()
 
         print(self.port, "waiting for connection to open")
@@ -287,9 +289,22 @@ class Client:
         Send packet to disable autonomus function.
         """
         self.write_queue.put(Client.WriteReq(53, 1))
+        self.is_automatic = False
+
+        change = StateChange(self.name)
+        change.data_item = "labelAutomatic"
+        change.value = str(self.is_automatic)
+        self.state_change_queue.put(change)
+
 
     def enable_autonomus(self):
         """
         Send packet to enable autonomus function.
         """
         self.write_queue.put(Client.WriteReq(53, 0))
+        self.is_automatic = True
+
+        change = StateChange(self.name)
+        change.data_item = "labelAutomatic"
+        change.value = str(self.is_automatic)
+        self.state_change_queue.put(change)
