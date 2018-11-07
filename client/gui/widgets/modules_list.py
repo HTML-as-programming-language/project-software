@@ -61,6 +61,7 @@ class ModulesList(Listbox):
                 index = m
                 break
 
-        del self.modules[index]
+        if index:
+            del self.modules[index]
 
         self.delete(index)

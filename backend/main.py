@@ -27,7 +27,9 @@ def handle_state_change():
         change = state_change_queue.get()
 
         url = "/module/" + change.module_id
-        if change.sensor_id is not None:    
+        if change.new is not None:
+            url += "/add"
+        elif change.sensor_id is not None:    
             url += "/sensor/" + change.sensor_id + "/dataitem/" + change.data_item
         else:
             url += "/dataitem/" + change.data_item

@@ -18,6 +18,7 @@ class StateChange:
         self.sensor_id = None
         self.data_item = None
         self.value = None
+        self.new = None
 
 class Client:
     """
@@ -96,8 +97,12 @@ class Client:
                 except ValueError:
                     print("unsupported sensor:", data)
 
-                print("Added client:", port)
-                api.send_request("/module/" + name + "/add", api.format_module(name, c))
+                print("Added client:", self.port)
+                change = StateChange(self.name)
+                change.new = True
+                change.value = self
+                self.state_change_queue.put(change)
+
                 print("Informed api clients of added module")
             elif pid == 102:
                 # Temperature update
