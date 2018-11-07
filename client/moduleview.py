@@ -91,5 +91,7 @@ class ModuleView:
         """
         return {
             "Open": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 1),
-            "Close": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 0)
+            "Close": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 0),
+            "Automatic": lambda: backend.instance.set_module_setting(self.module["id"], "automatic", 1),
+            "Manual": lambda: backend.instance.set_module_setting(self.module["id"], "automatic", 0),
         }
