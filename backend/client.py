@@ -52,6 +52,11 @@ class Client:
             self.data = data
 
     def __init__(self, name, port, baud_rate=9600, quit=None, state_change=None):
+        self.name = name
+        self.port = port
+
+        sleep(1)
+
         try:
             #self.connection = serial.Serial(port,
             #         baudrate=9600,
@@ -74,8 +79,8 @@ class Client:
                 port=port,
                 baudrate=baud_rate,
                 #timeout=1,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
+                #parity=serial.PARITY_NONE,
+                #stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS
                 #rtscts=1,
                 #parity=serial.PARITY_EVEN,
@@ -92,10 +97,7 @@ class Client:
         self.initialized = False
         self.quit_queue = quit
         self.state_change_queue = state_change
-
-        self.name = name
-        self.port = port
-
+        
         self.supported_sensors = []
         self.current_temp = 0
         self.current_light = 0
@@ -182,26 +184,26 @@ class Client:
             # TODO: Make this nicer. Use select() or something.
             try:
                 bytesToRead = self.connection.inWaiting()
-                if bytesToRead < 2:
+                if not bytesToRead:
                     # No bytes to read. Check the write queue.
                     
                     try:
                         item = self.write_queue.get_nowait()
                     except Empty:
-                        sleep(0.1)
+                        sleep(0.2)
                         continue
 
                     print(self.port, "write packet:", item.__dict__)
-                    self.connection.write([0xff, 0xff,
-                            *item.pid.to_bytes(2, byteorder="big"),
-                            *item.data.to_bytes(2, byteorder="big")])
+                    self.connection.write([0xff,
+                            *item.pid.to_bytes(1, byteorder="big"),
+                            *item.data.to_bytes(1, byteorder="big")])
                     self.connection.flush()
                 else:
                     # Receive packet
-                    data_in = self.connection.read(2)
+                    data_in = self.connection.read(1)
                     int_data = int.from_bytes(data_in, byteorder="big")
                     print(self.port, "int data", int_data)
-                    if int_data == 0xffff:
+                    if int_data == 0xff:
                         # Start of a packet
                         next_is_id = True
                     elif next_is_id:
