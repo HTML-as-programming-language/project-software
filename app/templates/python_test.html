@@ -20,10 +20,10 @@
             socket.emit('my event', {data: 'I\'m connected!'});
         });
         socket.on('init', function(msg) {
-                document.getElementById("ptag").innerText = msg;
+                document.getElementById("ptag").innerText = JSON.stringify(msg);
         });
         socket.on('update', function(msg) {
-                document.getElementById("ptag").innerText = msg;
+                document.getElementById("ptag").innerText = JSON.stringify(msg);
         });
     </script>
 

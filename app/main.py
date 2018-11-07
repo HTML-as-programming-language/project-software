@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO, emit
 from threading import Thread, Event
@@ -35,7 +37,7 @@ class RandomThread(Thread):
     def init(self):
         while not socketio_thread_stop_event.isSet():
             n = str(round(random.random()*10, 3))
-            socketio.emit('update', '{"modules": [{"data":{"hatch_status":'+n+',"labelHatch open":"'+n+'%"}, "id":"devttyACM0", "label":"/dev/ttyACM0", "sensors":[{"data":{"label":"'+n+'C","temp":'+n+'}, "id":"0", "label":"Temperature", "settings":[{"id":"temp_threshold","label":"Temperature thresholds","max":'+n+',"min":0,"subtype":"minmax","type":"int"}],"type":"TEMP"}]}]}')
+            socketio.emit('update', json.loads('{"modules": [{"data":{"hatch_status":'+n+',"labelHatch open":"'+n+'%"}, "id":"devttyACM0", "label":"/dev/ttyACM0", "sensors":[{"data":{"label":"'+n+'C","temp":'+n+'}, "id":"0", "label":"Temperature", "settings":[{"id":"temp_threshold","label":"Temperature thresholds","max":'+n+',"min":0,"subtype":"minmax","type":"int"}],"type":"TEMP"}]}]}'))
             sleep(self.delay)
 
     def run(self):
@@ -49,7 +51,7 @@ class RandomThread(Thread):
 
 @socketio.on('connect')
 def test_connect():
-    socketio.emit('init', """
+    socketio.emit('init', json.loads("""
 {"modules": [
     {"data":{"hatch_status":8,"labelHatch open":"8%"},
     "id":"devttyACM0",
@@ -58,7 +60,7 @@ def test_connect():
     "id":"0",
     "label":"Temperature",
     "settings":[{"id":"temp_threshold","label":"Temperature thresholds","max":30,"min":0,"subtype":"minmax","type":"int"}],"type":"TEMP"}]}
-]}""")
+]}"""))
 
     # need visibility of the global thread object
     global socketio_thread
