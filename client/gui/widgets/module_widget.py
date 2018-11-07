@@ -13,7 +13,10 @@ class ModuleWidget(tkinter.Frame):
     def __init__(self, master):
         super().__init__(master, bg=BG)
         self.module = None
-        self.title = tkinter.Label(self, text="Select a module...", bg=BG, fg="white", font=("Helvetica", TITLE_FONT_SIZE))
+        self.title = tkinter.Label(self,
+                                   text="Select a module...",
+                                   bg=BG, fg="white",
+                                   font=("Helvetica", TITLE_FONT_SIZE))
         self.title.grid(column=0, row=0)
 
         self.data_and_actions_frame = tkinter.Frame(self)
@@ -33,10 +36,12 @@ class ModuleWidget(tkinter.Frame):
 
     def show_module(self, module):
         self.module = module
-        self.title.config(text=f"Connected module: {module.module['label']}", font=("Helvetica", TITLE_FONT_SIZE))
+        self.title.config(text=f"Connected module: {module.module['label']}",
+                          font=("Helvetica", TITLE_FONT_SIZE))
         self.update_module_data(module)
 
-        self.module_actions = ModuleActions(self.data_and_actions_frame, module)
+        self.module_actions = ModuleActions(self.data_and_actions_frame,
+                                            module)
         self.module_actions.grid(column=1, row=0, sticky="nesw")
 
         self.module_config = ModuleConfig(self, module)

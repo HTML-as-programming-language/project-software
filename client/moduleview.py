@@ -1,6 +1,6 @@
-import re
 from enum import Enum
 import backend
+
 
 def determine_config_type(type_str, sub_type=""):
     if type_str == "int":
@@ -8,6 +8,7 @@ def determine_config_type(type_str, sub_type=""):
             print("yey minmax")
             return ModuleView.ConfigItem.Type.MIN_MAX
         return ModuleView.ConfigItem.Type.ONE_VALUE
+
 
 class ModuleView:
     class ConfigItem:
@@ -29,7 +30,6 @@ class ModuleView:
         Should return a dictionary full of human readable data
         """
 
-
         d = {}
         for key, value in self.module["data"].items():
             if key.startswith("label"):
@@ -39,7 +39,6 @@ class ModuleView:
             for key, value in s["data"].items():
                 if key.startswith("label"):
                     d[s["label"] + " " + key[5:]] = value
-            
 
         print("GET READABLE DATA DICT", d)
         print(self.module["sensors"])
@@ -49,7 +48,8 @@ class ModuleView:
         c = []
         for s in self.module["sensors"]:
             for sett in s["settings"]:
-                typ = determine_config_type(sett["type"], sett.get("subtype", ""))
+                typ = determine_config_type(sett["type"],
+                                            sett.get("subtype", ""))
 
                 def on_apply(data):
                     vals = []
@@ -74,7 +74,7 @@ class ModuleView:
                             s["id"],
                             sett["id"],
                             vals)
-                    
+
                 c.append(ModuleView.ConfigItem(
                     s["label"],
                     typ,
@@ -90,8 +90,12 @@ class ModuleView:
         }
         """
         return {
-            "Open": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 1),
-            "Close": lambda: backend.instance.set_module_setting(self.module["id"], "hatch_force", 0),
-            "Automatic": lambda: backend.instance.set_module_setting(self.module["id"], "automatic", 1),
-            "Manual": lambda: backend.instance.set_module_setting(self.module["id"], "automatic", 0),
+            "Open": lambda: backend.instance.set_module_setting(
+                self.module["id"], "hatch_force", 1),
+            "Close": lambda: backend.instance.set_module_setting(
+                self.module["id"], "hatch_force", 0),
+            "Automatic": lambda: backend.instance.set_module_setting(
+                self.module["id"], "automatic", 1),
+            "Manual": lambda: backend.instance.set_module_setting(
+                self.module["id"], "automatic", 0),
         }

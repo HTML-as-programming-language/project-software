@@ -44,5 +44,3 @@ class ModuleConfig(Frame):
 
             config_item.values = values
             config_item.on_apply(values)
-
-

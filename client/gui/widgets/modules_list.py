@@ -3,7 +3,8 @@ from tkinter import *
 
 class ModulesList(Listbox):
     def __init__(self, master, on_selection_changed):
-        super().__init__(master, borderwidth="2", relief="ridge", selectmode="browse")
+        super().__init__(master, borderwidth="2",
+                         relief="ridge", selectmode="browse")
         self.on_selection_changed = on_selection_changed
         self.prev_curselection = ()
         self.modules = []
@@ -40,7 +41,8 @@ class ModulesList(Listbox):
                 print(s["data"])
                 s["data"][key] = value
             return m
-        print("change_sensor_dataitem: unknown module or sensor:", module_id, sensor_id)
+        print("change_sensor_dataitem: unknown module or sensor:",
+              module_id, sensor_id)
         return None
 
     def change_dataitem(self, module_id, key, value):
@@ -52,7 +54,6 @@ class ModulesList(Listbox):
             return m
         print("change_dataitem: unknown module or sensor:", module_id)
         return None
-
 
     def remove(self, module_id):
         index = None

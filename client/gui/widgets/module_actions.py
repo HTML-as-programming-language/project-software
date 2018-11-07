@@ -13,4 +13,3 @@ class ModuleActions(Frame):
             btn = Button(self, text=key, command=actions[key])
             btn.grid(column=0, row=row, sticky="w")
             row += 1
-

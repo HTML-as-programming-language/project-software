@@ -31,16 +31,23 @@ class GUI(Frame):
         self.modules_list.remove(module_id)
 
     def change_module_sensor_dataitem(self, module_id, sensor_id, key, value):
-        m = self.modules_list.change_sensor_dataitem(module_id, sensor_id, key, value)
+        m = self.modules_list.change_sensor_dataitem(module_id,
+                                                     sensor_id,
+                                                     key,
+                                                     value)
 
-        #print("yes or not:", m and self.shown_module == m.module["id"], self.shown_module, m.module["id"])
+        # print("yes or not:",
+        # m and self.shown_module == m.module["id"],
+        # self.shown_module, m.module["id"])
         if m and self.shown_module == m.module["id"]:
             self.module_widget.update_module_data(m)
 
     def change_module_dataitem(self, module_id, key, value):
         m = self.modules_list.change_dataitem(module_id, key, value)
 
-        #print("yes or not:", m and self.shown_module == m.module["id"], self.shown_module, m.module["id"])
+        # print("yes or not:",
+        # m and self.shown_module == m.module["id"],
+        # self.shown_module, m.module["id"])
         if m and self.shown_module == m.module["id"]:
             self.module_widget.update_module_data(m)
 
@@ -48,12 +55,11 @@ class GUI(Frame):
         win = Toplevel()
         win.wm_title("Error")
 
-        l = Label(win, text="Error connecting to server")
-        l.grid(row=0, column=0)
+        l1 = Label(win, text="Error connecting to server")
+        l1.grid(row=0, column=0)
 
         l2 = Label(win, text=msg)
         l2.grid(row=1, column=0)
 
         b = Button(win, text="Quit", command=self.quit)
         b.grid(row=3, column=0)
-

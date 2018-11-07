@@ -1,5 +1,4 @@
 import sys
-import time
 from threading import Thread
 
 import backend
@@ -21,6 +20,7 @@ API = "http://127.0.0.1:8080"
 b = backend.Backend(API, myapp.show_connection_error)
 backend.instance = b
 
+
 def controller():
     views = {}
 
@@ -38,16 +38,19 @@ def controller():
         list(views.values())
     )
 
+
 thread = Thread(target=controller)
 thread.daemon = True
 thread.start()
 
 api.set_app(myapp)
 
+
 def webserver():
     api.app.run(
         debug=False,
         port=8081)
+
 
 threadserv = Thread(target=webserver)
 threadserv.daemon = True
