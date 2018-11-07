@@ -36,8 +36,8 @@ def handle_state_change():
             change.value = api.format_module(change.value.name, change.value)
             print(change.value)
         elif change.sensor_id is not None:
-            url += "/sensor/" + change.sensor_id + "/dataitem/"
-            + change.data_item
+            url += ("/sensor/" + change.sensor_id + "/dataitem/"
+            + change.data_item)
         else:
             url += "/dataitem/" + change.data_item
 
