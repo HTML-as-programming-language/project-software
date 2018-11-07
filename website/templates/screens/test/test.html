@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>TITLE</title>
+    <link rel="stylesheet" href="../../screens.css">
+  </head>
+  <body>
+    <div class="spinner" id='spinner'></div>
+    <div class="emscripten" id="status">We are Downloading the assemblies...</div>
+
+    <span id='controls'>
+      <span><input type="checkbox" id="resize">Resize canvas</span>
+      <span><input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;</span>
+      <span><input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)"></span>
+      <span><input type="button" value="Compile - This takes a few seconds" onclick="window.location.href = '?compile=true'"></span> <!--TODO: spinner-->
+    </span>
+
+    <div class="emscripten">
+      <progress value="0" max="100" id="progress" hidden=1></progress>
+    </div>
+
+    
+    <div class="emscripten_border">
+      <canvas class="emscripten" id="canvas"></canvas>
+    </div>
+    <textarea id="output" rows="8"></textarea>
+
+    <script async type="text/javascript" src="../../screens.js"></script>
+    <script async type="text/javascript" src="test.js"></script>
+    <script type="text/javascript">
+      window.addEventListener('error', function(e) {
+        if (e.target.src === "http://localhost:5003/screen/test.js") { window.location.href = '?compile=true'; }
+      }, true);
+    </script>
+  </body>
+</html>
+
+
