@@ -234,7 +234,7 @@ def format_module_sensor(stype, m):
         }
         data["settings"] = []
         data["settings"].append({
-            "id": "temp_threshold",
+            "id": "light_threshold",
             "label": "Light thresholds",
             "type": "int",
             "subtype": "minmax",
