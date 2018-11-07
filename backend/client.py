@@ -60,6 +60,8 @@ class Client:
                 stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS
                 )
+            self.connection.flushInput()
+            self.connection.flushOutput()
         except SerialException as e:
             raise e
             return
