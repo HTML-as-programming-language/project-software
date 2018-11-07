@@ -53,16 +53,39 @@ class Client:
 
     def __init__(self, name, port, baud_rate=9600, quit=None, state_change=None):
         try:
+            #self.connection = serial.Serial(port,
+            #         baudrate=9600,
+            #         bytesize=serial.EIGHTBITS,
+            #         parity=serial.PARITY_NONE,
+            #         stopbits=serial.STOPBITS_ONE,
+            #         timeout=1,
+            #         xonxoff=0,
+            #         rtscts=0
+            #         )
+            # Toggle DTR to reset Arduino
+            #self.connection.setDTR(False)
+            #sleep(1)
+            # toss any data already received, see
+            # http://pyserial.sourceforge.net/pyserial_api.html#serial.Serial.flushInput
+            #self.connection.flushInput()
+            #self.connection.setDTR(True)
+
             self.connection = serial.Serial(
                 port=port,
                 baudrate=baud_rate,
+                #timeout=1,
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS
+                #rtscts=1,
+                #parity=serial.PARITY_EVEN,
+                #timeout=0,
+                #rtscts=1,
                 )
-            self.connection.flushInput()
-            self.connection.flushOutput()
+            #self.connection.flushInput()
+            #self.connection.flushOutput()
         except SerialException as e:
+            print(self.port, e)
             raise e
             return
 
@@ -79,14 +102,18 @@ class Client:
         self.current_pos = 0
 
         self.write_queue = Queue()
+
+        print(self.port, "waiting for connection to open")
+        self.connection.isOpen()
+        print(self.port, "connection opened")
         
         self.thread = threading.Thread(target=self.run_serial_connection)
         self.thread.start()
 
     def run_serial_connection(self):
-        print("run serial connection")
+        print(self.port, "run serial connection")
         def handle_data(pid, data):
-            print("incoming packet:", pid, data)
+            print(self.port, "incoming packet:", pid, data)
 
             if pid == 101:
                 # Initialisation
@@ -97,15 +124,15 @@ class Client:
                     self.supported_sensors.append(SensorType(data))
                     self.initialized = True
                 except ValueError:
-                    print("unsupported sensor:", data)
+                    print(self.port, "unsupported sensor:", data)
 
-                print("Added client:", self.port)
+                print(self.port, "Added client:", self.port)
                 change = StateChange(self.name)
                 change.new = True
                 change.value = self
                 self.state_change_queue.put(change)
 
-                print("Informed api clients of added module")
+                print(self.port, "Informed api clients of added module")
             elif pid == 102:
                 # Temperature update
                 #self.current_temp = random.randint(data, 100)
@@ -141,12 +168,17 @@ class Client:
                 self.state_change_queue.put(change)
 
             else:
-                print("unknown packet id:", pid)
+                print(self.port, "unknown packet id:", pid)
 
         next_is_id = False
         pid = 0
 
+        self.connection.flushInput()
+        self.connection.flushOutput()
+
         while True:
+            data_in = []
+
             # TODO: Make this nicer. Use select() or something.
             try:
                 bytesToRead = self.connection.inWaiting()
@@ -159,7 +191,7 @@ class Client:
                         sleep(0.1)
                         continue
 
-                    print("write packet:", item.__dict__)
+                    print(self.port, "write packet:", item.__dict__)
                     self.connection.write([0xff, 0xff,
                             *item.pid.to_bytes(2, byteorder="big"),
                             *item.data.to_bytes(2, byteorder="big")])
@@ -168,7 +200,7 @@ class Client:
                     # Receive packet
                     data_in = self.connection.read(2)
                     int_data = int.from_bytes(data_in, byteorder="big")
-                    print("int data", int_data)
+                    print(self.port, "int data", int_data)
                     if int_data == 0xffff:
                         # Start of a packet
                         next_is_id = True
@@ -179,7 +211,8 @@ class Client:
                         handle_data(pid, int_data)
                         pid = 0
             except OSError as e:
-                print("OSError :<", e)
+                print(self.port, "OSError :<", e)
+                self.connection.close()
                 if self.quit_queue:
                     self.quit_queue.put(self.name)
                 return

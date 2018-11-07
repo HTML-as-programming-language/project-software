@@ -34,12 +34,13 @@ class Backend:
 
             if name not in self.clients:
                 try:
+                    print("Starting client:", port)
                     c = Client(
                             name,
                             port,
                             quit=self.client_stop_queue,
                             state_change=self.client_state_change_queue)
-                    c.port = port
+                    print("Started client:", c.port)
                 except SerialException as e:
                     # print("Could not add client:", port, e)
                     continue
