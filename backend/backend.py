@@ -44,12 +44,8 @@ class Backend:
                     # print("Could not add client:", port, e)
                     continue
 
-
                 self.clients[name] = c
-                print("Added client:", port)
-                api.send_request("/module/" + name + "/add", api.format_module(name, c))
-                print("Informed api clients of added module")
-        
+                        
     def __check_quit_queue(self):
         while True:
             try:

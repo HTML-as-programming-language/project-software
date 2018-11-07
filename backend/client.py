@@ -87,7 +87,6 @@ class Client:
 
             if pid == 101:
                 # Initialisation
-                # TODO: Send add packet here
 
                 try:
                     if len(self.supported_sensors) > 5:
@@ -97,10 +96,13 @@ class Client:
                 except ValueError:
                     print("unsupported sensor:", data)
 
+                print("Added client:", port)
+                api.send_request("/module/" + name + "/add", api.format_module(name, c))
+                print("Informed api clients of added module")
             elif pid == 102:
                 # Temperature update
                 #self.current_temp = random.randint(data, 100)
-                self.current_temp = data
+                self.current_temp = data/10
 
                 # TODO: Also send update for "temp" value, not label.
                 change = StateChange(self.name)
@@ -134,8 +136,6 @@ class Client:
             else:
                 print("unknown packet id:", pid)
 
-
-
         next_is_id = False
         pid = 0
 
@@ -161,6 +161,7 @@ class Client:
                     # Receive packet
                     data_in = self.connection.read(2)
                     int_data = int.from_bytes(data_in, byteorder="big")
+                    print("int data", int_data)
                     if int_data == 0xffff:
                         # Start of a packet
                         next_is_id = True
