@@ -1,7 +1,6 @@
 import glob
 from multiprocessing import Queue
 from queue import Empty
-from time import sleep
 import sys
 from serial.serialutil import SerialException
 from client import Client
@@ -10,8 +9,6 @@ import api
 
 
 class Backend:
-    #clients = {}
-
     def __init__(self, state_change_queue):
         self.clients = {}
         self.client_stop_queue = Queue()
@@ -21,7 +18,9 @@ class Backend:
         ports = []
         if sys.platform.startswith('win'):
             ports = ['COM%s' % (i + 1) for i in range(256)]
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        elif (sys.platform.startswith('linux')
+              or sys.platform.startswith('cygwin')):
+
             # this excludes your current terminal "/dev/tty"
             ports = glob.glob('/dev/ttyACM*')
         elif sys.platform.startswith('darwin'):
@@ -42,11 +41,11 @@ class Backend:
                             state_change=self.client_state_change_queue)
                     print("Started client:", c.port)
                 except SerialException as e:
-                    # print("Could not add client:", port, e)
+                    print("Could not add client:", port, e)
                     continue
 
                 self.clients[name] = c
-                        
+
     def __check_quit_queue(self):
         while True:
             try:
@@ -57,7 +56,6 @@ class Backend:
                     name = self.clients[port].name
                     del self.clients[port]
                     print("Removed client:", port)
-
 
                     api.send_request("/module/" + name + "/delete")
                     print("Informed api clients of removed module")

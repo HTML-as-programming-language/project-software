@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 _b = None
 
+
 def set_backend(b):
     global _b
     _b = b
@@ -28,7 +29,9 @@ class HandlerRequest:
         self.new = new
         self.reply = reply
 
+
 request_queue = queue.Queue()
+
 
 def handler_api_clients():
     print("handler_api_clients start")
@@ -47,32 +50,33 @@ def handler_api_clients():
             print("uknown request type:", r.request_type, r)
     print("quit handler")
 
+
 @app.route("/")
 def hello():
     return "HTML-as-programming-language / project-software / backend"
+
 
 @app.route("/init", methods=["post"])
 def init():
     content = ""
     try:
         content = request.get_json(force=True)
-    except:
+    except Exception:
         pass
 
     if not content:
         return json_err("no callback given")
 
-
     content = content.replace('"', "")
 
-    #if content in clients:
+    # if content in clients:
     # TODO
     # return json_err("callback already exists")
     # pass
 
     print("yo did is de content:", content)
 
-    #c = Client(content)
+    # c = Client(content)
     r = HandlerRequest("append", new=content)
     request_queue.put(r)
 
@@ -80,23 +84,25 @@ def init():
         "modules": [format_module(key, m) for key, m in _b.clients.items()]
     })
 
+
 @app.route("/keepalive")
 def keep_alive():
     content = ""
     try:
         content = request.get_json(force=True)
-    except:
+    except Exception:
         pass
 
     if not content:
         return json_err("endpoint not given")
 
-    if content not in clients:
-        return json_err("given endpoint not known")
+    # if content not in clients:
+    #    return json_err("given endpoint not known")
 
-    clients[content].last_keep_alive = datetime.datetime.now()
-    
+    # clients[content].last_keep_alive = datetime.datetime.now()
+
     return jsonify(True)
+
 
 @app.route("/module/<module_id>/setting/<setting_key>", methods=["post"])
 def module_setting_set(module_id, setting_key):
@@ -105,7 +111,7 @@ def module_setting_set(module_id, setting_key):
     content = ""
     try:
         content = request.get_json(force=True)
-    except:
+    except Exception:
         pass
 
     if module_id not in _b.clients:
@@ -126,14 +132,16 @@ def module_setting_set(module_id, setting_key):
 
     return jsonify(True)
 
-@app.route("/module/<module_id>/sensor/<sensor_id>/<sensor_setting_key>", methods=["post"])
+
+@app.route("/module/<module_id>/sensor/<sensor_id>/<sensor_setting_key>",
+           methods=["post"])
 def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
     client_maintenance()
 
     content = ""
     try:
         content = request.get_json(force=True)
-    except:
+    except Exception:
         pass
 
     if module_id not in _b.clients:
@@ -142,37 +150,41 @@ def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
     if sensor_setting_key == "temp_threshold":
         if type(content) is not list or len(content) < 2:
             return json_err("not two temps provided for temp")
-            
+
         _b.clients[module_id].set_threshold_open_temperature(int(content[0]))
         _b.clients[module_id].set_threshold_close_temperature(int(content[1]))
     elif sensor_setting_key == "light_threshold":
         if type(content) is not list or len(content) < 2:
             return json_err("not two intensities provided for light")
-            
-        _b.clients[module_id].set_threshold_open_lightintensity(int(content[0]))
-        _b.clients[module_id].set_threshold_close_lightintensity(int(content[1]))
+
+        _b.clients[module_id].set_threshold_open_lightintensity(
+                int(content[0]))
+        _b.clients[module_id].set_threshold_close_lightintensity(
+                int(content[1]))
     else:
         return json_err("unknown setting")
 
     return jsonify(True)
 
+
 def client_maintenance():
     return
     # TODO
-    now = datetime.datetime.now()
+    # now = datetime.datetime.now()
 
-    to_rem = []
+    # to_rem = []
 
-    for key, c in clients.items():
-        diff = now - c.last_keep_alive
-        print(diff.seconds)
-        if diff.seconds > 15:
-            print("Remove inactive client:", c.callback)
+    # for key, c in clients.items():
+    #    diff = now - c.last_keep_alive
+    #    print(diff.seconds)
+    #    if diff.seconds > 15:
+    #        print("Remove inactive client:", c.callback)
+    #
+    #        to_rem.append(key)
+    #
+    # for c in to_rem:
+    #    del clients[c]
 
-            to_rem.append(key)
-
-    for c in to_rem:
-        del clients[c]
 
 def format_module(mid, m):
     return {
@@ -187,8 +199,10 @@ def format_module(mid, m):
             "automatic": m.is_automatic,
 
         },
-        "sensors": [format_module_sensor(stype, m) for stype in m.supported_sensors],
+        "sensors": [format_module_sensor(stype, m)
+                    for stype in m.supported_sensors],
     }
+
 
 def format_module_sensor(stype, m):
     data = {}
@@ -230,9 +244,11 @@ def format_module_sensor(stype, m):
 
     return data
 
+
 def json_err(msg):
     # TODO: return HTTP error code.
     return '{"error": "' + msg + '"}\n', 400
+
 
 def send_request(endpoint, data=None):
     count = 0

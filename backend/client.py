@@ -3,14 +3,14 @@ import serial
 from enum import Enum
 from multiprocessing import Queue
 from queue import Empty
-import select
 from time import sleep
 from serial.serialutil import SerialException
-import random
+
 
 class SensorType(Enum):
     TEMP = 0
     LIGHT = 1
+
 
 class StateChange:
     def __init__(self, module_id):
@@ -20,6 +20,7 @@ class StateChange:
         self.value = None
         self.new = None
 
+
 class Client:
     """
     Client is a module; an device connected to this computer by UART
@@ -28,19 +29,9 @@ class Client:
     current_temp: temperature in tenth degrees celsius.
     current_light: light in percentage.
     current_pos: position of hatch/sunscreen in percentage.
+    current_distance: distance.
+    is_automatic: boolean
     """
-
-    #connection = None
-    #thread = None
-
-    # These values should be used as read-only.
-    # There are written off the main thread.
-    #supported_sensors = []
-    #current_temp = 0
-    #current_light = 0
-    #current_pos = 0
-
-    write_queue = None
 
     class WriteReq:
         """
@@ -51,14 +42,15 @@ class Client:
             self.pid = pid
             self.data = data
 
-    def __init__(self, name, port, baud_rate=9600, quit=None, state_change=None):
+    def __init__(self, name, port, baud_rate=9600, quit=None,
+                 state_change=None):
         self.name = name
         self.port = port
 
         sleep(1)
 
         try:
-            #self.connection = serial.Serial(port,
+            # self.connection = serial.Serial(port,
             #         baudrate=9600,
             #         bytesize=serial.EIGHTBITS,
             #         parity=serial.PARITY_NONE,
@@ -68,27 +60,27 @@ class Client:
             #         rtscts=0
             #         )
             # Toggle DTR to reset Arduino
-            #self.connection.setDTR(False)
-            #sleep(1)
+            # self.connection.setDTR(False)
+            # sleep(1)
             # toss any data already received, see
             # http://pyserial.sourceforge.net/pyserial_api.html#serial.Serial.flushInput
-            #self.connection.flushInput()
-            #self.connection.setDTR(True)
+            # self.connection.flushInput()
+            # self.connection.setDTR(True)
 
             self.connection = serial.Serial(
                 port=port,
                 baudrate=baud_rate,
-                #timeout=1,
-                #parity=serial.PARITY_NONE,
-                #stopbits=serial.STOPBITS_ONE,
+                # timeout=1,
+                # parity=serial.PARITY_NONE,
+                # stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS
-                #rtscts=1,
-                #parity=serial.PARITY_EVEN,
-                #timeout=0,
-                #rtscts=1,
+                # rtscts=1,
+                # parity=serial.PARITY_EVEN,
+                # timeout=0,
+                # rtscts=1,
                 )
-            #self.connection.flushInput()
-            #self.connection.flushOutput()
+            # self.connection.flushInput()
+            # self.connection.flushOutput()
         except SerialException as e:
             print(self.port, e)
             raise e
@@ -97,7 +89,6 @@ class Client:
         self.initialized = False
         self.quit_queue = quit
         self.state_change_queue = state_change
-        
         self.supported_sensors = []
         self.current_temp = 0
         self.current_light = 0
@@ -111,12 +102,12 @@ class Client:
         print(self.port, "waiting for connection to open")
         self.connection.isOpen()
         print(self.port, "connection opened")
-        
         self.thread = threading.Thread(target=self.run_serial_connection)
         self.thread.start()
 
     def run_serial_connection(self):
         print(self.port, "run serial connection")
+
         def handle_data(pid, data):
             print(self.port, "incoming packet:", pid, data)
 
@@ -140,7 +131,7 @@ class Client:
                 print(self.port, "Informed api clients of added module")
             elif pid == 102:
                 # Temperature update
-                #self.current_temp = random.randint(data, 100)
+                # self.current_temp = random.randint(data, 100)
                 self.current_temp = data/10
 
                 # TODO: Also send update for "temp" value, not label.
@@ -163,7 +154,7 @@ class Client:
 
             elif pid == 104:
                 # Current pos
-                #self.current_pos = random.randint(data, 100)
+                # self.current_pos = random.randint(data, 100)
                 self.current_pos = data
 
                 # TODO: Also send update for "temp" value, not label.
@@ -196,7 +187,7 @@ class Client:
                 bytesToRead = self.connection.inWaiting()
                 if not bytesToRead:
                     # No bytes to read. Check the write queue.
-                    
+
                     try:
                         item = self.write_queue.get_nowait()
                     except Empty:
@@ -204,9 +195,10 @@ class Client:
                         continue
 
                     print(self.port, "write packet:", item.__dict__)
-                    self.connection.write([0xff,
-                            *item.pid.to_bytes(1, byteorder="big"),
-                            *item.data.to_bytes(1, byteorder="big")])
+                    self.connection.write(
+                            [0xff,
+                             *item.pid.to_bytes(1, byteorder="big"),
+                             *item.data.to_bytes(1, byteorder="big")])
                     self.connection.flush()
                 else:
                     # Receive packet
@@ -229,7 +221,6 @@ class Client:
                     self.quit_queue.put(self.name)
                 return
 
-    
     def open_hatch(self):
         """
         Send packet to open the hatch (packet 51).
@@ -295,7 +286,6 @@ class Client:
         change.data_item = "labelAutomatic"
         change.value = str(self.is_automatic)
         self.state_change_queue.put(change)
-
 
     def enable_autonomus(self):
         """
