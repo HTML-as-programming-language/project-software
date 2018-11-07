@@ -51,6 +51,7 @@ class ModuleView:
                 typ = determine_config_type(sett["type"],
                                             sett.get("subtype", ""))
 
+                setCp = sett.copy()
                 def on_apply(data):
                     vals = []
                     print("Applied")
@@ -72,7 +73,7 @@ class ModuleView:
                     backend.instance.set_module_sensor_setting(
                             self.module["id"],
                             s["id"],
-                            sett["id"],
+                            setCp["id"],
                             vals)
 
                 c.append(ModuleView.ConfigItem(
