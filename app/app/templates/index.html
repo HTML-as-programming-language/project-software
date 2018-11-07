@@ -1,0 +1,27 @@
+{% extends "appbuilder/base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <div class="container">
+    <h1>Module beheer systeem</h1>
+    <p>Gebouwed door 5xG</p>
+    <ul>
+      <li>Hilko</li>
+      <li>Chris</li>
+      <li>Simon</li>
+      <li>Remi</li>
+      <li>Timo</li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://localhost:8081/');
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+    socket.on('newnumber', function(msg) {
+        console.log("Received number" + msg.number);
+    });
+</script>
+{% endblock %}

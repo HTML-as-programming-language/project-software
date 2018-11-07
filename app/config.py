@@ -17,7 +17,7 @@ CSRF_ENABLED = True
 # GLOBALS FOR APP Builder 
 #------------------------------
 # Uncomment to setup Your App name
-#APP_NAME = "My App Name"
+APP_NAME = "MBS"
 
 # Uncomment to setup Setup an App icon
 #APP_ICON = "static/img/logo.jpg"
@@ -39,10 +39,10 @@ AUTH_TYPE = AUTH_DB
 #AUTH_ROLE_PUBLIC = 'Public'
 
 # Will allow user self registration
-#AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION = True
 
 # The default user self registration role
-#AUTH_USER_REGISTRATION_ROLE = "Public"
+AUTH_USER_REGISTRATION_ROLE = "Public"
 
 # When using LDAP Auth, setup the ldap server
 #AUTH_LDAP_SERVER = "ldap://ldapserver.new"

@@ -1,20 +1,134 @@
 from flask_appbuilder import Model
-from flask_appbuilder.models.mixins import AuditMixin, FileColumn, ImageColumn
-from sqlalchemy import Column, Integer, String, ForeignKey 
-from sqlalchemy.orm import relationship
-"""
-
-You can use the extra Flask-AppBuilder fields and Mixin's
-
-AuditMixin will add automatic timestamp of created and modified by who
+from sqlalchemy import Column, Integer, String
 
 
 """
-
-
-class TestModel(Model):
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), unique=True, nullable=False)
-
-    def __repr__(self):
-        return self.name
+{
+    "modules": [
+        {
+            "data": {
+                "hatch_status": 8,
+                "labelHatch open": "8%"
+            },
+            "id": "devttyACM0",
+            "label": "/dev/ttyACM0",
+            "sensors": [
+                {
+                    "data": {
+                        "label": "16C",
+                        "temp": 16
+                    },
+                    "id": "0",
+                    "label": "Temperature",
+                    "settings": [
+                        {
+                            "id": "temp_threshold",
+                            "label": "Temperature thresholds",
+                            "max": 30,
+                            "min": 0,
+                            "subtype": "minmax",
+                            "type": "int"
+                        }
+                    ],
+                    "type": "TEMP"
+                },
+                {
+                    "data": {
+                        "label": "16C",
+                        "temp": 16
+                    },
+                    "id": "0",
+                    "label": "Temperature",
+                    "settings": [
+                        {
+                            "id": "temp_threshold",
+                            "label": "Temperature thresholds",
+                            "max": 30,
+                            "min": 0,
+                            "subtype": "minmax",
+                            "type": "int"
+                        }
+                    ],
+                    "type": "TEMP"
+                },
+                {
+                    "data": {
+                        "label": "16C",
+                        "temp": 16
+                    },
+                    "id": "0",
+                    "label": "Temperature",
+                    "settings": [
+                        {
+                            "id": "temp_threshold",
+                            "label": "Temperature thresholds",
+                            "max": 30,
+                            "min": 0,
+                            "subtype": "minmax",
+                            "type": "int"
+                        }
+                    ],
+                    "type": "TEMP"
+                },
+                {
+                    "data": {
+                        "label": "16C",
+                        "temp": 16
+                    },
+                    "id": "0",
+                    "label": "Temperature",
+                    "settings": [
+                        {
+                            "id": "temp_threshold",
+                            "label": "Temperature thresholds",
+                            "max": 30,
+                            "min": 0,
+                            "subtype": "minmax",
+                            "type": "int"
+                        }
+                    ],
+                    "type": "TEMP"
+                },
+                {
+                    "data": {
+                        "label": "16C",
+                        "temp": 16
+                    },
+                    "id": "0",
+                    "label": "Temperature",
+                    "settings": [
+                        {
+                            "id": "temp_threshold",
+                            "label": "Temperature thresholds",
+                            "max": 30,
+                            "min": 0,
+                            "subtype": "minmax",
+                            "type": "int"
+                        }
+                    ],
+                    "type": "TEMP"
+                },
+                {
+                    "data": {
+                        "label": "16C",
+                        "temp": 16
+                    },
+                    "id": "0",
+                    "label": "Temperature",
+                    "settings": [
+                        {
+                            "id": "temp_threshold",
+                            "label": "Temperature thresholds",
+                            "max": 30,
+                            "min": 0,
+                            "subtype": "minmax",
+                            "type": "int"
+                        }
+                    ],
+                    "type": "TEMP"
+                }
+            ]
+        }
+    ]
+}
+"""

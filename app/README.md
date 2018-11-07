@@ -1,3 +1,3 @@
 # project-software / app
 
-pip install flask-appbuilder
+pip install flask, flask-appbuilder, flask-socketio
