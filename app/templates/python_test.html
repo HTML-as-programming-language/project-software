@@ -22,6 +22,9 @@
         socket.on('init', function(msg) {
                 document.getElementById("ptag").innerText = msg;
         });
+        socket.on('update', function(msg) {
+                document.getElementById("ptag").innerText = msg;
+        });
     </script>
 
 </body>
