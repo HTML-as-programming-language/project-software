@@ -175,7 +175,7 @@ class Client:
 
                 change = StateChange(self.name)
                 change.data_item = "labelDistance"
-                change.value = str(self.current_pos) + " cm"
+                change.value = str(self.current_distance) + " cm"
                 self.state_change_queue.put(change)
             else:
                 print(self.port, "unknown packet id:", pid)
