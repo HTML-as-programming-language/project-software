@@ -4,7 +4,6 @@ BG = "#eaeaea"
 
 
 class ModuleData(Frame):
-
     def __init__(self, master, module):
         super().__init__(master, borderwidth="2", relief="ridge", bg=BG)
         data = module.readable_data_dict()

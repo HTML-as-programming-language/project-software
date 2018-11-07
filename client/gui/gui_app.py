@@ -35,14 +35,14 @@ class GUI(Frame):
 
         print("yes or not:", m and self.shown_module == m.module["id"], self.shown_module, m.module["id"])
         if m and self.shown_module == m.module["id"]:
-            self.module_widget.show_module(m)
+            self.module_widget.update_module_data(m)
 
     def change_module_dataitem(self, module_id, key, value):
         m = self.modules_list.change_dataitem(module_id, key, value)
 
         #print("yes or not:", m and self.shown_module == m.module["id"], self.shown_module, m.module["id"])
         if m and self.shown_module == m.module["id"]:
-            self.module_widget.show_module(m)
+            self.module_widget.update_module_data(m)
 
     def show_connection_error(self, msg=""):
         win = Toplevel()
