@@ -51,37 +51,40 @@ class ModuleView:
                 typ = determine_config_type(sett["type"],
                                             sett.get("subtype", ""))
 
-                setCp = sett.copy()
-                def on_apply(data):
-                    vals = []
-                    print("Applied")
-                    print(data)
-                    if typ == ModuleView.ConfigItem.Type.MIN_MAX:
-                        for x in data:
-                            val = 0
-                            try:
-                                val = int(x)
-                            except ValueError:
-                                print("not 0", x)
-                            vals.append(val)
-
-                    elif typ == ModuleView.ConfigItem.Type.ONE_VALUE:
-                        vals = int(data)
-                    else:
-                        vals = data
-
-                    backend.instance.set_module_sensor_setting(
-                            self.module["id"],
-                            s["id"],
-                            setCp["id"],
-                            vals)
-
+                on_apply = self.create_on_apply(s, sett, typ)
+                
                 c.append(ModuleView.ConfigItem(
                     s["label"],
                     typ,
                     on_apply
                 ))
         return c
+
+    def create_on_apply(self, s, sett, typ):
+        def on_apply(data):
+            vals = []
+            print(data)
+            if typ == ModuleView.ConfigItem.Type.MIN_MAX:
+                for x in data:
+                    val = 0
+                    try:
+                        val = int(x)
+                    except ValueError:
+                        print("not 0", x)
+                    vals.append(val)
+
+            elif typ == ModuleView.ConfigItem.Type.ONE_VALUE:
+                vals = int(data)
+            else:
+                vals = data
+
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+            backend.instance.set_module_sensor_setting(
+                    self.module["id"],
+                    s["id"],
+                    sett["id"],
+                    vals)
+        return on_apply
 
     def get_actions(self):
         """
