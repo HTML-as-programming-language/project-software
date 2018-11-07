@@ -181,6 +181,8 @@ def format_module(mid, m):
         "data": {
             "labelHatch open": str(m.current_pos) + "%",
             "hatch_status": m.current_pos,
+            "labelDistance": str(m.current_distance) + "cm",
+            "distance": m.current_distance,
         },
         "sensors": [format_module_sensor(stype, m) for stype in m.supported_sensors],
     }

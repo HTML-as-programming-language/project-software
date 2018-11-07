@@ -29,6 +29,9 @@ def handle_state_change():
         url = "/module/" + change.module_id
         if change.new is not None:
             url += "/add"
+            print(change.value.name)
+            change.value = api.format_module(change.value.name, change.value)
+            print(change.value)
         elif change.sensor_id is not None:    
             url += "/sensor/" + change.sensor_id + "/dataitem/" + change.data_item
         else:

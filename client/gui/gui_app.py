@@ -33,7 +33,7 @@ class GUI(Frame):
     def change_module_sensor_dataitem(self, module_id, sensor_id, key, value):
         m = self.modules_list.change_sensor_dataitem(module_id, sensor_id, key, value)
 
-        print("yes or not:", m and self.shown_module == m.module["id"], self.shown_module, m.module["id"])
+        #print("yes or not:", m and self.shown_module == m.module["id"], self.shown_module, m.module["id"])
         if m and self.shown_module == m.module["id"]:
             self.module_widget.update_module_data(m)
 

@@ -102,6 +102,7 @@ class Client:
         self.current_temp = 0
         self.current_light = 0
         self.current_pos = 0
+        self.current_distance = 0
 
         self.write_queue = Queue()
 
@@ -168,7 +169,14 @@ class Client:
                 change.data_item = "labelHatch open"
                 change.value = str(self.current_pos) + "%"
                 self.state_change_queue.put(change)
+            elif pid == 105:
+                # Light update
+                self.current_distance = data
 
+                change = StateChange(self.name)
+                change.data_item = "labelDistance"
+                change.value = str(self.current_pos) + " cm"
+                self.state_change_queue.put(change)
             else:
                 print(self.port, "unknown packet id:", pid)
 
