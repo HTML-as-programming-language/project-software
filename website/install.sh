@@ -9,3 +9,4 @@ printf "\n>>> Installing Emscripten\n\n"
 ./emsdk install latest # This may take a few minuts to install
 ./emsdk activate latest
 source ./emsdk_env.sh
+cd ..
