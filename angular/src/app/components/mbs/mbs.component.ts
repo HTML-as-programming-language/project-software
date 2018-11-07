@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ModuleService } from 'src/app/services/module.service';
 
 @Component({
     selector: 'app-mbs',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MbsComponent implements OnInit {
 
-    constructor() { }
+    constructor(
+        public moduleService: ModuleService
+    ) { }
 
     ngOnInit() {
     }
