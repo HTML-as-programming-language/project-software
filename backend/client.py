@@ -97,6 +97,8 @@ class Client:
 
         self.is_automatic = True
 
+        self.initted = False
+
         self.write_queue = Queue()
 
         print(self.port, "waiting for connection to open")
@@ -114,10 +116,18 @@ class Client:
             if pid == 101:
                 # Initialisation
 
+                if self.initted:
+                    print(self.port, "has already initted")
+                    return
+
                 try:
-                    if len(self.supported_sensors) > 5:
-                        return
-                    self.supported_sensors.append(SensorType(data))
+                    if data & 0x01:
+                        self.supported_sensors.append(
+                                SensorType(SensorType.TEMP))
+                    if data & 0x02:
+                        self.supported_sensors.append(
+                                SensorType(SensorType.LIGHT))
+
                     self.initialized = True
                 except ValueError:
                     print(self.port, "unsupported sensor:", data)
@@ -127,6 +137,8 @@ class Client:
                 change.new = True
                 change.value = self
                 self.state_change_queue.put(change)
+
+                self.initted = True
 
                 print(self.port, "Informed api clients of added module")
             elif pid == 102:
