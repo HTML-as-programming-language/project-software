@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 </head>
 <body>
     <h1 id="title">title</h1>
@@ -13,18 +14,47 @@
         <li>driw</li>
     </ul>
 
+    <button id="button_yes"> YES </button>
+    <button id="button_no"> NO </button>
+
+    <canvas id="myChart"></canvas>
+
+
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "My First dataset",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 2, 20, 30, 45, 0, 10, 5, 2, 20, 30, 45, 0, 10, 5, 2, 20, 30, 45],
+                }]
+            },
+
+            // Configuration options go here
+            options: {}
+        });
+
+
         var socket = io.connect('http://localhost:8081/');
         window.socket = socket;
-        socket.on('connect', function() {
-            socket.emit('my event', {data: 'I\'m connected!'});
+        socket.on('connect', function(client) {
+            alert("Connected");
         });
         socket.on('init', function(msg) {
                 document.getElementById("ptag").innerText = JSON.stringify(msg);
         });
-        socket.on('update', function(msg) {
-                document.getElementById("ptag").innerText = JSON.stringify(msg);
+        socket.on('update', function (msg) {
+            console.log("UPDATE : ");
+            document.getElementById("ptag").innerText = JSON.stringify(msg);
         });
 
         socket.on('historyInit', function(msg) {
@@ -33,6 +63,14 @@
 
         socket.on('historyUpdate', function(msg) {
             console.log("HISTORYUPDATE : "+ JSON.stringify(msg));
+            document.getElementById("title").innerText += " - " + msg
+        });
+
+        document.getElementById("button_yes").addEventListener("click", function() {
+            socket.emit("iWantHistory", "1");
+        });
+        document.getElementById("button_no").addEventListener("click", function() {
+            socket.emit("iDontWantHistory", "1");
         });
     </script>
 
