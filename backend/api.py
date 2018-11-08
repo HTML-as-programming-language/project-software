@@ -39,7 +39,7 @@ def handler_api_clients():
     while True:
         r = request_queue.get()
         print("api_clients:", api_clients, threading.get_ident())
-        if r.request_type == "append":
+        if r.request_type == "append" and r.new not in api_clients:
             print("new api_client:", r.new)
             api_clients.append(r.new)
         elif r.request_type == "get":
