@@ -52,11 +52,16 @@ export interface Sensor {
 
 export interface Setting {
 
-    id: string,
-    label: string,
-    type: string,
-    subtype?: string,
-    min?: number,
+    id: string
+    label: string
+    type: string
+    subtype?: string
+
+    // if subtype == "minmax"
+    min?: number
     max?: number
+
+    // frontend shit
+    changed?: boolean
 
 }

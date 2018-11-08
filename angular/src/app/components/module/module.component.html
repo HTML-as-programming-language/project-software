@@ -3,7 +3,7 @@
     <div class="jumbotron">
         <h1 class="display-4">Module: {{module.label}}</h1>
         <!-- <p class="lead">
-
+            Extra description....
         </p>
          -->
 
@@ -19,23 +19,17 @@
 
         <hr class="my-4">
 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox"
-                checked="module.data.automatic" id="automaticCheck">
-            <label class="form-check-label" for="automaticCheck">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"
+                id="automaticCheck" checked="module.data.automatic">
+            <label class="custom-control-label" for="automaticCheck">
                 Automatic
             </label>
         </div>
 
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input"
-                id="customCheck1">
-            <label class="custom-control-label" for="customCheck1">Check
-                this custom checkbox</label>
-        </div>
-
     </div>
 
+    <!-- DATA -->
     <table class="table">
         <thead>
             <tr>
@@ -51,4 +45,46 @@
         </tbody>
     </table>
 
+    <!-- SETTINGS -->
+    <div class="row mb-4">
+
+        <div class="col-6 card" *ngFor="let sett of settings">
+            <div class="card-body">
+                <h6 class="card-title">{{sett.label}}</h6>
+
+                <div *ngIf="sett.subtype == 'minmax'" class="setting-body">
+                    <ng-container *ngTemplateOutlet="minmaxSetting; context: { sett: sett }"></ng-container>
+                </div>
+
+                <button class="btn btn-primary mt-4" [disabled]="!sett.changed">
+                    <i class="fas fa-check"></i>
+                    Apply
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<!-- MIN-MAX-SETTING -->
+<ng-template #minmaxSetting let-sett="sett">
+
+    <label for="minRange">
+        Min. {{sett.min}}{{sett.id == "temp_threshold" ?
+        "°C" : ""}}
+    </label>
+    <input type="range" class="custom-range" id="minRange"
+        [value]="sett.min" (input)="sett.min = $event.target.valueAsNumber; sett.changed = true"
+        [min]="minRange(sett)" [max]="maxRange(sett)">
+
+    <label for="maxRange">
+        Max. {{sett.max}}{{sett.id == "temp_threshold" ?
+        "°C" : ""}}
+    </label>
+    <input type="range" class="custom-range" id="maxRange"
+        [value]="sett.max" (input)="sett.max = $event.target.valueAsNumber; sett.changed = true"
+        [min]="minRange(sett)" [max]="maxRange(sett)">
+
+</ng-template>
