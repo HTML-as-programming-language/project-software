@@ -1,0 +1,54 @@
+<div class="outer" *ngIf="module">
+
+    <div class="jumbotron">
+        <h1 class="display-4">Module: {{module.label}}</h1>
+        <!-- <p class="lead">
+
+        </p>
+         -->
+
+        <a class="btn btn-primary btn-lg mr-1" [ngClass]="{'disabled': module.data.hatch_status > 50}"
+            role="button">
+            <i class="fas fa-long-arrow-alt-up"></i>
+        </a>
+
+        <a class="btn btn-primary btn-lg" [ngClass]="{'disabled': module.data.hatch_status < 50}"
+            role="button">
+            <i class="fas fa-long-arrow-alt-down"></i>
+        </a>
+
+        <hr class="my-4">
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                checked="module.data.automatic" id="automaticCheck">
+            <label class="form-check-label" for="automaticCheck">
+                Automatic
+            </label>
+        </div>
+
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"
+                id="customCheck1">
+            <label class="custom-control-label" for="customCheck1">Check
+                this custom checkbox</label>
+        </div>
+
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of data">
+                <th scope="row">{{item[0]}}</th>
+                <td>{{item[1]}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

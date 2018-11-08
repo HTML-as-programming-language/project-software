@@ -1,0 +1,13 @@
+
+.outer {
+    animation: module-anim .3s;
+    transform-origin: left;
+}
+
+@keyframes module-anim {
+    0% {
+        opacity: 0;
+        transform: scaleX(.5);
+    }
+    100% {}
+}

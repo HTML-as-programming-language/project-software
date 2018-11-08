@@ -24,13 +24,19 @@ const example = {
     ]
 }
 
+// /module/devttyACM0/sensor/0/temp_threshold/
+
+// "[45,5]"
 
 export interface Module {
 
     id: string,
     label: string,
     sensors: Sensor[],
-
+    data: {
+        hatch_status: number,
+        automatic: boolean
+    }
 
 }
 

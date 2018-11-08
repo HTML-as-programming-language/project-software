@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MbsComponent } from './components/mbs/mbs.component';
+import { ModuleComponent } from './components/module/module.component';
 
 const routes: Routes = [
     {
-        path: "", component: MbsComponent
+        path: "module/:id", component: ModuleComponent
     }
 ]
 

@@ -14,15 +14,13 @@ export class ModuleService {
 
         this.socket = (window as any).socket = io.connect("http://localhost:8081");
 
-        const onUpdate = data => {
-
-            console.log(data);
-            this.modules = data["modules"];
-
-        };
+        const onUpdate = data => this.modules = data["modules"];
         this.socket.on("init", onUpdate);
         this.socket.on("update", onUpdate);
     }
 
+    getById(id: string): Module {
+        for (var m of this.modules) if (m.id == id) return m;
+    }
 
 }
