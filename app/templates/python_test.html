@@ -26,6 +26,14 @@
         socket.on('update', function(msg) {
                 document.getElementById("ptag").innerText = JSON.stringify(msg);
         });
+
+        socket.on('historyInit', function(msg) {
+            console.log("HISTORYINIT : "+ JSON.stringify(msg));
+        });
+
+        socket.on('historyUpdate', function(msg) {
+            console.log("HISTORYUPDATE : "+ JSON.stringify(msg));
+        });
     </script>
 
 </body>
