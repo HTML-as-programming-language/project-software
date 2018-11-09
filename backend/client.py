@@ -299,6 +299,9 @@ class Client:
         temp: int tenth degrees celcius.
         """
 
+        temp -= 5
+        temp *= 10
+
         self.write_queue.put(Client.WriteReq(11, temp))
 
     def set_threshold_close_temperature(self, temp):
@@ -308,6 +311,9 @@ class Client:
 
         temp: int tenth degrees celcius.
         """
+
+        temp -= 5
+        temp *= 10
 
         self.write_queue.put(Client.WriteReq(12, temp))
 
