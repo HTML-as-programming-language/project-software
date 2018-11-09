@@ -249,7 +249,6 @@ class Client:
                     # Receive packet
                     data_in = self.connection.read(1)
                     int_data = int.from_bytes(data_in, byteorder="big")
-                    print(self.port, "int data", int_data)
                     if int_data == 0xff:
                         # Start of a packet
                         next_is_id = True

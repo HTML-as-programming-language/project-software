@@ -24,10 +24,11 @@ def set_backend(b):
 
 
 class HandlerRequest:
-    def __init__(self, request_type, new=None, reply=None):
+    def __init__(self, request_type, new=None, reply=None, remove=None):
         self.request_type = request_type
         self.new = new
         self.reply = reply
+        self.remove = remove
 
 
 request_queue = queue.Queue()
@@ -49,6 +50,9 @@ def handler_api_clients():
             cp = api_clients.copy()
             print("cp:", cp)
             r.reply.put(cp)
+        elif r.request_type == "remove":
+            api_clients.remove(r.remove)
+            print("remove client:", r.remove)
         else:
             print("uknown request type:", r.request_type, r)
     print("quit handler")
@@ -249,7 +253,6 @@ def format_module_sensor(stype, m):
 
 
 def json_err(msg):
-    # TODO: return HTTP error code.
     return '{"error": "' + msg + '"}\n', 400
 
 
@@ -272,6 +275,9 @@ def send_request(endpoint, data=None):
             count += 1
         except Exception as e:
             print(i, endpoint, e)
-            return None
+            request_queue(HandlerRequest("remove", remove=i))
+        except:
+            print(i, endpoint, "error, so removing")
+            request_queue(HandlerRequest("remove", remove=i))
 
     return count
