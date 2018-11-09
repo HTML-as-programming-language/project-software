@@ -1,3 +1,66 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~font-awesome/css/font-awesome.css";
+
+
+.transition {   -webkit-transition: all 2s linear;
+                   -moz-transition: all 2s linear;
+                    -ms-transition: all 2s linear;
+                     -o-transition: all 2s linear;
+                        transition: all 2s linear; }  // just to be sure
+
+.clear { clear:both; font-size:0; }
+.float-clear {clear: left; display: block;}
+
+.rel {  position: relative; }
+.abs {  position: absolute; }
+
+.tr {   text-align: right; }
+.tl {   text-align: left; }
+.tc {   text-align: center; }
+
+.g-center { float: none; margin: 0 auto; }
+.scaleContainer, .t-center { display: table; margin: 0 auto; }
+.verticle-center {  position: absolute;  top: 50%;  transform: translateY(-50%); }
+
+.no-3d { -webkit-transform-style: preserve-3d;  -moz-transform-style: preserve-3d;  transform-style: preserve-3d; }  // is needed as parent for verticle-center
+
+.hide { display: none !important; }
+.hidden { opacity: 0; visibility: hidden; }
+.block { display: block !important; }
+.inline-block { display: inline-block !important;}
+.flex { display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flexbox;
+        display: flex; }
+
+.uppercase { text-transform: uppercase; }
+
+.ullino {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+.m0a { margin: 0 auto !important; }
+.ma0 { margin: auto 0 !important; }
+
+.w100 { width: 100%; }
+.mw100 { max-width: 100%; }
+
+$num: 15;                           // STYLE HELPER CLASSES
+@while $num > -1 {
+    .m#{$num}  { margin:             #{$num}em !important; }
+    .mt#{$num} { margin-top:         #{$num}em !important; }
+    .mr#{$num} { margin-right:       #{$num}em !important; }
+    .mb#{$num} { margin-bottom:      #{$num}em !important; }
+    .ml#{$num} { margin-left:        #{$num}em !important; }
+
+    .p#{$num}  { padding:            #{$num}em !important; }
+    .pt#{$num} { padding-top:        #{$num}em !important; }
+    .pr#{$num} { padding-right:      #{$num}em !important; }
+    .pb#{$num} { padding-bottom:     #{$num}em !important; }
+    .pl#{$num} { padding-left:       #{$num}em !important; }
+
+    $num: $num - 1;
+}
