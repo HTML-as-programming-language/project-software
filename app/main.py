@@ -86,8 +86,8 @@ def test_connect():
 @app.route('/api/update_me/<path:path>', methods=['post'])
 def backend_callback(path):
     global time_last_update
-    if time_last_update - int(time()) > 1:
-        time_last_update = time()
+    if int(time()) - time_last_update > 1:
+        time_last_update = int(time())
         data = json.loads(requests.post('http://localhost:8080/init', json="http://localhost:8081/api/update_me").text)
         socketio.emit('update', data)  # TEMPORARILY
         print(" >>> UPDATE")
