@@ -86,7 +86,7 @@ def init():
     request_queue.put(r)
 
     return jsonify({
-        "modules": [format_module(key, m) for key, m in _b.clients.items()]
+        "modules": [format_module(key, m) for key, m in _b.clients.items() if m.initted]
     })
 
 

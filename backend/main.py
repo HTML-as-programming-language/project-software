@@ -2,6 +2,7 @@ from backend import Backend
 from time import sleep
 import threading
 import queue
+import sys
 
 import api
 
@@ -51,7 +52,15 @@ thread2.start()
 
 print("MAIN!", __name__)
 
+port = 8080
+
+if len(sys.argv) >= 2:
+    port = sys.argv[1]
+
+print("Listening on port:", port, ". You can specify the port as an argument.")
+
 api.app.run(
     # debug=True,
-    port=8080,
+    host="0.0.0.0"
+    port=port,
 )

@@ -9,8 +9,8 @@ class Backend:
         self.url = url
         self.error_callback = error_callback
 
-    def init(self):
-        return self.send_request("/init", '"http://127.0.0.1:8081"')
+    def init(self, host):
+        return self.send_request("/init", host)
         pass
 
     def send_request(self, endpoint, data=None):
