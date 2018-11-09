@@ -119,6 +119,8 @@ def module_setting_set(module_id, setting_key):
     content = ""
     try:
         content = request.get_json(force=True)
+        if type(content) is str:
+            content = json.loads(content)
     except Exception:
         pass
 
@@ -136,9 +138,6 @@ def module_setting_set(module_id, setting_key):
         else:
             _b.clients[module_id].disable_autonomus()
     elif setting_key == "servo_minmax":
-        if type(content) is str:
-            content = json.loads(content)
-
         if type(content) is not list or len(content) < 2:
             return json_err("not two values provided for servo")
 
@@ -160,6 +159,8 @@ def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
     content = ""
     try:
         content = request.get_json(force=True)
+        if type(content) is str:
+            content = json.loads(content)
     except Exception:
         pass
 
