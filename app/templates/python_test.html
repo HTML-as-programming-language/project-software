@@ -59,18 +59,21 @@
 
         socket.on('historyInit', function(msg) {
             console.log("HISTORYINIT : "+ JSON.stringify(msg));
+            for (var item in msg) {
+                document.getElementById("title").innerText += " - " + item[0] + " : " + item[1] + " : " + item[2];
+            }
         });
 
         socket.on('historyUpdate', function(msg) {
             console.log("HISTORYUPDATE : "+ JSON.stringify(msg));
-            document.getElementById("title").innerText += " - " + msg
+            document.getElementById("title").innerText += " - " + msg[0] + " : " + msg[1] + " : " + msg[2]
         });
 
         document.getElementById("button_yes").addEventListener("click", function() {
-            socket.emit("iWantHistory", "1");
+            socket.emit("iWantHistory", "devttyACM0");
         });
         document.getElementById("button_no").addEventListener("click", function() {
-            socket.emit("iDontWantHistory", "1");
+            socket.emit("iDontWantHistory");
         });
     </script>
 
