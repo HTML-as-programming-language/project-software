@@ -7,12 +7,12 @@
         </p>
          -->
 
-        <a class="btn btn-primary btn-lg mr-1" [ngClass]="{'disabled': module.data.hatch_status > 50 || module.data.automatic}"
+        <a class="btn btn-primary btn-lg mr-1" [ngClass]="{'disabledddd': module.data.hatch_status > 50 || module.data.automatic}"
             role="button" (click)="moduleService.toggleHatch(module, 0)">
             <i class="fas fa-long-arrow-alt-up"></i>
         </a>
 
-        <a class="btn btn-primary btn-lg" [ngClass]="{'disabled': module.data.hatch_status < 50 || module.data.automatic}"
+        <a class="btn btn-primary btn-lg" [ngClass]="{'disabledddd': module.data.hatch_status < 50 || module.data.automatic}"
             role="button" (click)="moduleService.toggleHatch(module, 1)">
             <i class="fas fa-long-arrow-alt-down"></i>
         </a>

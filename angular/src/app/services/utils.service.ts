@@ -7,6 +7,12 @@ export class UtilsService {
 
     constructor() { }
 
+    /**
+     * timestamp to string
+     * 
+     * @param timestamp
+     * @param onlyTime like '13:40'
+     */
     timestampToString(timestamp: number, onlyTime: boolean): string {
         var a = new Date(timestamp > 1000000000000 ? timestamp : timestamp * 1000);
         var b = new Date();
