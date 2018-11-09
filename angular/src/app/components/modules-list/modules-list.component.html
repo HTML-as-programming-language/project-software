@@ -4,4 +4,10 @@
         routerLinkActive="active">
         {{module.label}}
     </a>
+
+    <a *ngIf="modulesService.modules.length == 0" class="list-group-item list-group-item-action">
+        No module connected
+    </a>
+
+
 </div>
