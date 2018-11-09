@@ -156,7 +156,9 @@ class Client:
                     next_is_id = False
                     pid = int_data
                 elif pid:
-                    self.handle_data(pid, int_data)
+                    log_msg = self.handle_data(pid, int_data)
+
+                    print(self.port, "incoming packet:", pid, int_data, " : ", log_msg)
                     pid = 0
         except OSError as e:
             print(self.port, "OSError read loop :<", e)
@@ -166,8 +168,6 @@ class Client:
             return
 
     def handle_data(self, pid, data):
-        log_msg = ""
-
         if pid == 101:
             # Initialisation
 
@@ -199,9 +199,10 @@ class Client:
                 print(self.port, "Informed api clients of added module")
         elif pid == 102:
             data -= 50
+            data /= 10
+
             if self.current_temp == data:
-                log_msg = "is the same"
-                return
+                return "is the same"
 
             # Temperature update
             # self.current_temp = random.randint(data, 100)
@@ -220,8 +221,7 @@ class Client:
             self.state_change_queue.put(change)
         elif pid == 103:
             if self.current_light == data:
-                log_msg = "is the same"
-                return
+                return "is the same"
 
             # Light update
             self.current_light = data
@@ -241,8 +241,7 @@ class Client:
             # Current pos
             # self.current_pos = random.randint(data, 100)
             if self.current_pos == data:
-                log_msg = "is the same"
-                return
+                return "is the same"
 
             self.current_pos = data
 
@@ -257,8 +256,7 @@ class Client:
             self.state_change_queue.put(change)
         elif pid == 105:
             if self.current_distance == data:
-                log_msg = "is the same"
-                return
+                return "is the same"
 
             # Distance update
             self.current_distance = data
@@ -274,10 +272,9 @@ class Client:
             self.state_change_queue.put(change)
 
         else:
-            log_msg =  "unknown packet id"
+            return "unknown packet id"
 
-        if SPAM_DEBUG:
-            print(self.port, "incoming packet:", pid, data, " : ", log_msg)
+        return ""
 
 
     def open_hatch(self):
