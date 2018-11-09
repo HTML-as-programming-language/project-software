@@ -51,4 +51,12 @@ export class ModuleService {
         });
     }
 
+    openHatch(module: Module) {
+
+    }
+
+    closeHatch(module: Module) {
+        
+    }
+
 }
