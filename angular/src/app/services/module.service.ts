@@ -18,15 +18,11 @@ export class ModuleService {
         this.socket.on("init", onUpdate);
         this.socket.on("update", onUpdate);
 
-        this.socket.emit("iWantHistory", "hghg");
-
-        this.socket.emit("iDoNotWantHistory", "id");
-
         this.socket.on("historyInit", data => {
-
+            console.log(data)
         });
         this.socket.on("historyUpdate", data => {
-
+            console.log(data)
         });
     }
 
@@ -52,11 +48,25 @@ export class ModuleService {
     }
 
     openHatch(module: Module) {
-
+        this.socket.emit("request", {
+            path: `module/${module.id}/setting/hatch_force/`,
+            body: 1
+        });
     }
 
     closeHatch(module: Module) {
-        
+        this.socket.emit("request", {
+            path: `module/${module.id}/setting/hatch_force/`,
+            body: 0
+        });
+    }
+
+    iWantHistory(module: Module) {
+        this.socket.emit("iWantHistory", module.id);
+    }
+
+    iDontWantHistory(module: Module) {
+        this.socket.emit("iDoNotWantHistory", module.id);
     }
 
 }
