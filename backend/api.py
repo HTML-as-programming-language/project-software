@@ -5,8 +5,6 @@ import datetime
 from client import SensorType
 import requests
 import queue
-import threading
-from requests.exceptions import ConnectionError
 
 
 class Client:

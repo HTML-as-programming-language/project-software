@@ -6,6 +6,8 @@ from queue import Empty
 from time import sleep
 from serial.serialutil import SerialException
 
+from constants import SPAM_DEBUG
+
 
 class SensorType(Enum):
     TEMP = 0
@@ -193,7 +195,8 @@ class Client:
 
             self.initted = True
 
-            print(self.port, "Informed api clients of added module")
+            if SPAM_DEBUG:
+                print(self.port, "Informed api clients of added module")
         elif pid == 102:
             if self.current_temp == data:
                 log_msg = "is the same"
@@ -272,7 +275,8 @@ class Client:
         else:
             log_msg =  "unknown packet id"
 
-        print(self.port, "incoming packet:", pid, data, " : ", log_msg)
+        if SPAM_DEBUG:
+            print(self.port, "incoming packet:", pid, data, " : ", log_msg)
 
 
     def open_hatch(self):

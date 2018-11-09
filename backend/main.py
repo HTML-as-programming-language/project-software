@@ -5,6 +5,7 @@ import queue
 import sys
 
 import api
+from constants import SPAM_DEBUG
 
 state_change_queue = queue.Queue()
 
@@ -43,8 +44,9 @@ def handle_state_change():
             url += "/dataitem/" + change.data_item
 
         count = api.send_request(url, change.value)
-        print("Informed api clients of modified state", url,
-                change.value, ". Clients count:", count)
+        if SPAM_DEBUG:
+            print("Informed api clients of modified state", url,
+                    change.value, ". Clients count:", count)
 
 
 thread2 = threading.Thread(target=handle_state_change)

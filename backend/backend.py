@@ -9,6 +9,7 @@ from serial.tools import list_ports
 from client import Client
 
 import api
+from constants import SPAM_DEBUG
 
 
 class Backend:
@@ -61,7 +62,8 @@ class Backend:
                     print("Removed client:", port)
 
                     api.send_request("/module/" + name + "/delete")
-                    print("Informed api clients of removed module")
+                    if SPAM_DEBUG:
+                        print("Informed api clients of removed module")
 
             except Empty:
                 break
