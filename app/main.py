@@ -69,7 +69,9 @@ def test_connect():
         data = json.loads(requests.post('http://localhost:8080/init', json="http://localhost:8081/api/update_me").text)
         socketio.emit('init', data)
         print(" >>> INIT")
-        update_history(data)
+        pprint(data)
+        if len(data["modules"]) > 0:
+            update_history(data)
     except requests.exceptions.RequestException as e:  # This is the correct syntax
         print("\n\n\n We hebben de Centrale niet kunnen vinden op het address http://localhost:8080/init \n\n\n")
 
@@ -97,7 +99,9 @@ class updateThread(Thread):
     def init(self):
         while not update_thread_stop_event.isSet():
             if history_index in history.keys():
-                socketio.emit('historyUpdate', list(history[str(history_index)][-1]))
+                last_history = list(history[str(history_index)][-1])
+                last_history[0] = datetime.now().second
+                socketio.emit('historyUpdate', last_history)
                 print(" >>> historyUpdate")
                 sleep(self.delay)
                 pprint(history)
@@ -107,7 +111,7 @@ class updateThread(Thread):
 
 
 def update_history(data):
-    new_data = [str(datetime.now())]
+    new_data = [datetime.now().second]
     for sensor in data["modules"][0]["sensors"]:
         # pprint(list(sensor["data"].values())[1])
         new_data.append(list(sensor["data"].values())[1])
@@ -120,3 +124,4 @@ def update_history(data):
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, port=8081)
+    # app.run(debug=True, port=8081)
