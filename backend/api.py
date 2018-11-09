@@ -202,6 +202,14 @@ def format_module(mid, m):
             "automatic": m.is_automatic,
 
         },
+        "settings": [{
+            "id": "servo_minmax",
+            "label": "Servo",
+            "type": "int",
+            "subtype": "minmax",
+            "min": 0,
+            "max": 100,
+        }],
         "sensors": [format_module_sensor(stype, m)
                     for stype in m.supported_sensors],
     }
@@ -271,9 +279,9 @@ def send_request(endpoint, data=None):
             count += 1
         except Exception as e:
             print(i, endpoint, e)
-            request_queue(HandlerRequest("remove", remove=i))
+            request_queue.put(HandlerRequest("remove", remove=i))
         except:
             print(i, endpoint, "error, so removing")
-            request_queue(HandlerRequest("remove", remove=i))
+            request_queue.put(HandlerRequest("remove", remove=i))
 
     return count
