@@ -111,7 +111,7 @@ class Client:
         print(self.port, "run serial connection")
 
         def handle_data(pid, data):
-            print(self.port, "incoming packet:", pid, data)
+            log_msg = ""
 
             if pid == 101:
                 # Initialisation
@@ -143,7 +143,7 @@ class Client:
                 print(self.port, "Informed api clients of added module")
             elif pid == 102:
                 if self.current_temp == data:
-                    print("is the same")
+                    log_msg = "is the same"
                     return
 
                 # Temperature update
@@ -163,7 +163,7 @@ class Client:
                 self.state_change_queue.put(change)
             elif pid == 103:
                 if self.current_light == data:
-                    print("is the same")
+                    log_msg = "is the same"
                     return
 
                 # Light update
@@ -184,7 +184,7 @@ class Client:
                 # Current pos
                 # self.current_pos = random.randint(data, 100)
                 if self.current_pos == data:
-                    print("is the same")
+                    log_msg = "is the same"
                     return
 
                 self.current_pos = data
@@ -200,6 +200,7 @@ class Client:
                 self.state_change_queue.put(change)
             elif pid == 105:
                 if self.current_distance == data:
+                    log_msg = "is the same"
                     return
 
                 # Distance update
@@ -216,7 +217,9 @@ class Client:
                 self.state_change_queue.put(change)
 
             else:
-                print(self.port, "unknown packet id:", pid)
+                log_msg =  "unknown packet id"
+
+            print(self.port, "incoming packet:", pid, data, " : ", log_msg)
 
         next_is_id = False
         pid = 0
