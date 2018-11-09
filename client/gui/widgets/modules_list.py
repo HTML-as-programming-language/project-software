@@ -27,7 +27,7 @@ class ModulesList(Listbox):
 
     def add(self, module):
         self.modules.append(module)
-        self.insert(0, module.module["label"])
+        self.insert(END, module.module["label"])
 
     def change_sensor_dataitem(self, module_id, sensor_id, key, value):
         for m in self.modules:

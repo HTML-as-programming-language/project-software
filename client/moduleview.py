@@ -78,7 +78,6 @@ class ModuleView:
             else:
                 vals = data
 
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
             backend.instance.set_module_sensor_setting(
                     self.module["id"],
                     s["id"],
