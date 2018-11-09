@@ -13,6 +13,12 @@ from constants import SPAM_DEBUG
 
 
 class Backend:
+    """
+    Class Backend handled the Clients (modules).
+    It watched for newly connected modules, and maintains the list of
+    connected modules and their Client class instance.
+    """
+
     def __init__(self, state_change_queue):
         self.clients = {}
         self.client_stop_queue = Queue()

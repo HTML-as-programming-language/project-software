@@ -28,6 +28,14 @@ api_thread.start()
 
 
 def handle_state_change():
+    """
+    handle_state_change checks the state_change_queue.
+    Clients put a message on this queue if one of their variables
+    changed, like the temperature or hatch-open/close.
+    This function listens for new messages on that queue and
+    handles them by sending a message to api-clients to
+    notify them of the change.
+    """
     while True:
         change = state_change_queue.get()
 
@@ -47,12 +55,11 @@ def handle_state_change():
                     change.value, ". Clients count:", count)
 
 
+# Spawn a few threads. The more workers, the better.
 thread2 = threading.Thread(target=handle_state_change)
 thread2.start()
-
 thread3 = threading.Thread(target=handle_state_change)
 thread3.start()
-
 thread4 = threading.Thread(target=handle_state_change)
 thread4.start()
 

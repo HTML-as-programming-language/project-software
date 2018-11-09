@@ -35,6 +35,12 @@ request_queue = queue.Queue()
 
 
 def handler_api_clients():
+    """
+    handler_api_clients maintains the list of connected api clients.
+    It checks the request_queue, on which other threads can request
+    a copy of the api-clients list, or can request to add or remove
+    a client.
+    """
     print("handler_api_clients start")
     api_clients = []
     while True:
