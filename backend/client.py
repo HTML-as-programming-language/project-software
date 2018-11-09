@@ -153,7 +153,7 @@ class Client:
                 change = StateChange(self.name)
                 change.sensor_id = "0"
                 change.data_item = "label"
-                change.value = str(self.current_temp) + "C"
+                change.value = str(self.current_temp) + "°C"
                 self.state_change_queue.put(change)
 
                 change = StateChange(self.name)

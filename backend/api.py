@@ -216,7 +216,7 @@ def format_module_sensor(stype, m):
         data["label"] = "Temperature"
         data["data"] = {
             "temp": m.current_temp,
-            "label": str(m.current_temp) + "C"
+            "label": str(m.current_temp) + "°C"
         }
         data["settings"] = []
         data["settings"].append({
