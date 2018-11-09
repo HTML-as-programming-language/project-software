@@ -20,6 +20,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
         responsive: true
     };
 
+    _module: Module;
     settings: Setting[];
 
     constructor(
@@ -31,8 +32,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
     ngOnInit() {
         setInterval(() => {
             for (var d of this.lineChartData) {
-                d["data"] = Array.from({length: 20}, () => Math.floor(Math.random() * 40));
-                console.log(d);
+                d["data"] = Array.from({ length: 20 }, () => Math.floor(Math.random() * 40));
             }
             this.lineChartData = JSON.parse(JSON.stringify(this.lineChartData));
         }, 30);
@@ -60,8 +60,10 @@ export class ModuleComponent implements OnInit, OnDestroy {
             }
         }
 
-        if (module)
+        if (module && !this._module) {
             this.moduleService.iWantHistory(module);
+            this._module = module;
+        }
 
         return module;
     }
@@ -70,14 +72,14 @@ export class ModuleComponent implements OnInit, OnDestroy {
         var m = this.module;
         if (!m) return;
         var data = [];
-        const getData = (obj, startWithLabel) => {
-            if (!obj) return;
-            for (var key in obj)
-                if (typeof key == "string" && (!startWithLabel || key.startsWith("label")))
-                    data.push([startWithLabel ? key.substr(5) : key, obj[key]]);
+
+        for (var key in m.data) {
+            if (typeof key == "string" && key.startsWith("label"))
+                data.push([key.substr(5), m.data[key]]);
         }
-        getData(m.data, true);
-        for (var sensor of m.sensors) getData(sensor.data, false);
+        for (var sensor of m.sensors)
+            data.push([sensor.label, sensor.data["label"]])
+
         return data;
     }
 

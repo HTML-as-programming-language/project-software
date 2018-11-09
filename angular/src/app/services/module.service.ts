@@ -19,10 +19,10 @@ export class ModuleService {
         this.socket.on("update", onUpdate);
 
         this.socket.on("historyInit", data => {
-
+            console.log(data)
         });
         this.socket.on("historyUpdate", data => {
-
+            console.log(data)
         });
     }
 
