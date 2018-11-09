@@ -39,9 +39,12 @@ def handler_api_clients():
     while True:
         r = request_queue.get()
         print("api_clients:", api_clients, threading.get_ident())
-        if r.request_type == "append" and r.new not in api_clients:
+        if r.request_type == "append":
             print("new api_client:", r.new)
-            api_clients.append(r.new)
+            if r.new not in api_clients:
+                api_clients.append(r.new)
+            else:
+                print("already exists")
         elif r.request_type == "get":
             cp = api_clients.copy()
             print("cp:", cp)
@@ -267,8 +270,8 @@ def send_request(endpoint, data=None):
                 print(r.text)
                 return None
             count += 1
-        except ConnectionError as e:
-            print(e)
+        except Exception as e:
+            print(i, endpoint, e)
             return None
 
     return count
