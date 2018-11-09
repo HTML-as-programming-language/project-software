@@ -1,0 +1,95 @@
+<div class="outer" *ngIf="module">
+
+    <div class="jumbotron">
+        <h1 class="display-4">Module: {{module.label}}</h1>
+        <!-- <p class="lead">
+            Extra description....
+        </p>
+         -->
+
+        <a class="btn btn-primary btn-lg mr-1" [ngClass]="{'disabled': module.data.hatch_status > 50 || module.data.automatic}"
+            role="button" (click)="moduleService.openHatch(module)">
+            <i class="fas fa-long-arrow-alt-up"></i>
+        </a>
+
+        <a class="btn btn-primary btn-lg" [ngClass]="{'disabled': module.data.hatch_status < 50 || module.data.automatic}"
+            role="button" (click)="moduleService.closeHatch(module)">
+            <i class="fas fa-long-arrow-alt-down"></i>
+        </a>
+
+        <hr class="my-4">
+
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input"
+                id="automaticCheck" checked="module.data.automatic">
+            <label class="custom-control-label" for="automaticCheck">
+                Automatic
+            </label>
+        </div>
+
+    </div>
+
+    <!-- DATA -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of data">
+                <th scope="row">{{item[0]}}</th>
+                <td>{{item[1]}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SETTINGS -->
+    <div class="row mb-4">
+
+        <div class="col-6 p2" *ngFor="let sett of settings">
+
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">{{sett.label}}</h6>
+
+                    <div *ngIf="sett.subtype == 'minmax'"
+                        class="setting-body">
+                        <ng-container *ngTemplateOutlet="minmaxSetting; context: { sett: sett }"></ng-container>
+                    </div>
+
+                    <button class="btn btn-primary mt-4"
+                        [disabled]="!sett.changed" (click)="apply(sett)">
+                        <i class="fas fa-check"></i>
+                        Apply
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MIN-MAX-SETTING -->
+<ng-template #minmaxSetting let-sett="sett">
+
+    <label for="minRange">
+        Min. {{sett.min}}{{sett.id == "temp_threshold" ?
+        "°C" : ""}}
+    </label>
+    <input type="range" class="custom-range" id="minRange"
+        [value]="sett.min" (input)="sett.min = $event.target.valueAsNumber; sett.changed = true"
+        [min]="minRange(sett)" [max]="maxRange(sett)">
+
+    <label for="maxRange">
+        Max. {{sett.max}}{{sett.id == "temp_threshold" ?
+        "°C" : ""}}
+    </label>
+    <input type="range" class="custom-range" id="maxRange"
+        [value]="sett.max" (input)="sett.max = $event.target.valueAsNumber; sett.changed = true"
+        [min]="minRange(sett)" [max]="maxRange(sett)">
+
+</ng-template>

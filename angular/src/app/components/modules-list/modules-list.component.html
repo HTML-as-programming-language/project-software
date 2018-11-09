@@ -1,0 +1,7 @@
+<div class="list-group">
+    <a *ngFor="let module of modulesService.modules"
+        [routerLink]="'/module/' + module.id" class="list-group-item list-group-item-action"
+        routerLinkActive="active">
+        {{module.label}}
+    </a>
+</div>
