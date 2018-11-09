@@ -3,18 +3,53 @@
 // --------------------------------------------------
 
 
+$color_blue_dark: #0e496b;
+$color_blue_light: #2b6e9a;
+$color_yellow_dark: #fcd854;
+$color_yellow_light: #f8f390;
+
+$color_background_white: #ffffff;
+$color_background_gray: #dcdedd;
+
+$color_titles: #231f20;
+
+
+
+// FROM HERE WE CAN OVERRIDE ANYTHING WE WANT THAT BOOTSTRAP WILL USE INTERNALLY
+// https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss
+
+
 //== Colors
 //## Gray and brand colors for use across Bootstrap.
 
-$gray-base:              #000 !default;
+$gray-base:              #231f20 !default;
 $gray-darker:            lighten($gray-base, 13.5%) !default; // #222
 $gray-dark:              lighten($gray-base, 20%) !default;   // #333
 $gray:                   lighten($gray-base, 33.5%) !default; // #555
 $gray-light:             lighten($gray-base, 46.7%) !default; // #777
 $gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
 
-$brand-primary:         #0e496b !default;
-$brand-success:         #2b6e9a !default;
-$brand-info:            #5bc0de !default;
-$brand-warning:         #f0ad4e !default;
+$brand-primary:         $color_blue_dark !default;
+$brand-success:         $color_blue_light !default;
+$brand-info:            $color_yellow_dark !default;
+$brand-warning:         $color_yellow_light !default;
 $brand-danger:          #d9534f !default;
+
+$body-bg:               $color_background_gray;
+$body-color:            $color_titles;
+
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+
+$enable-caret:                                true !default;
+$enable-rounded:                              false !default;
+$enable-shadows:                              false !default;
+$enable-gradients:                            false !default;
+$enable-transitions:                          true !default;
+$enable-prefers-reduced-motion-media-query:   true !default;
+$enable-hover-media-query:                    false !default; // Deprecated, no longer affects any compiled CSS
+$enable-grid-classes:                         true !default;
+$enable-print-styles:                         true !default;
+$enable-validation-icons:                     true !default;
