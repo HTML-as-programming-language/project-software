@@ -61,6 +61,6 @@ print("Listening on port:", port, ". You can specify the port as an argument.")
 
 api.app.run(
     # debug=True,
-    host="0.0.0.0"
+    host="0.0.0.0",
     port=port,
 )
