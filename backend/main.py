@@ -43,7 +43,7 @@ def handle_state_change():
 
         count = api.send_request(url, change.value)
         print("Informed api clients of modified state", url,
-              change.value, count)
+                change.value, ". Clients count:", count)
 
 
 thread2 = threading.Thread(target=handle_state_change)

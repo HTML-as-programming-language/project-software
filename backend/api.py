@@ -39,7 +39,6 @@ def handler_api_clients():
     api_clients = []
     while True:
         r = request_queue.get()
-        print("api_clients:", api_clients, threading.get_ident())
         if r.request_type == "append":
             print("new api_client:", r.new)
             if r.new not in api_clients:
@@ -48,7 +47,6 @@ def handler_api_clients():
                 print("already exists")
         elif r.request_type == "get":
             cp = api_clients.copy()
-            print("cp:", cp)
             r.reply.put(cp)
         elif r.request_type == "remove":
             api_clients.remove(r.remove)
@@ -80,8 +78,6 @@ def init():
     # TODO
     # return json_err("callback already exists")
     # pass
-
-    print("yo did is de content:", content)
 
     # c = Client(content)
     r = HandlerRequest("append", new=content)
