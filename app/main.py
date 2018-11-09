@@ -39,6 +39,8 @@ def recourse(path):
 update_thread = Thread()
 update_thread_stop_event = Event()
 
+time_last_update = time()
+
 connected_clients = {}
 
 history = {"example": [("time1", 10), ("time2", 5), ("time3", 2), ("time4", 20)]}
@@ -49,7 +51,7 @@ history_index = None
 def i_want_history(arg):
     global history_index
     history_index = arg
-    socketio.emit('historyInit', {"names": ["Timestamp", "Temperature", "Light thresholds"] ,"data" : history[history_index]})
+    socketio.emit('historyInit', {"names": ["Timestamp", "Temperature", "Light"] ,"data" : history[history_index]})
 
 
 @socketio.on('iDontWantHistory')
@@ -69,7 +71,7 @@ def test_connect():
         data = json.loads(requests.post('http://localhost:8080/init', json="http://localhost:8081/api/update_me").text)
         socketio.emit('init', data)
         print(" >>> INIT")
-        pprint(data)
+        # pprint(data)
         if len(data["modules"]) > 0:
             update_history(data)
     except requests.exceptions.RequestException as e:  # This is the correct syntax
@@ -83,12 +85,17 @@ def test_connect():
 
 @app.route('/api/update_me/<path:path>', methods=['post'])
 def backend_callback(path):
-    data = json.loads(requests.post('http://localhost:8080/init', json="http://localhost:8081/api/update_me").text)
-    socketio.emit('update', data)  # TEMPORARILY
-    print(" >>> UPDATE")
-    update_history(data)
-    # print("\n\n"+str(path)+"\n\n") # TODO: v2
-    return "bedankt voor uw donatie"
+    global time_last_update
+    if time_last_update - int(time()) > 1:
+        time_last_update = time()
+        data = json.loads(requests.post('http://localhost:8080/init', json="http://localhost:8081/api/update_me").text)
+        socketio.emit('update', data)  # TEMPORARILY
+        print(" >>> UPDATE")
+        update_history(data)
+        # print("\n\n"+str(path)+"\n\n") # TODO: v2
+        return "bedankt voor uw donatie"
+
+    return "We will have marcy"
 
 
 class updateThread(Thread):
