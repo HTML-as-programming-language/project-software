@@ -1,5 +1,5 @@
 import random
-from time import sleep
+from time import sleep, time
 from datetime import datetime
 
 from flask import Flask, render_template, send_from_directory
@@ -100,7 +100,7 @@ class updateThread(Thread):
         while not update_thread_stop_event.isSet():
             if history_index in history.keys():
                 last_history = list(history[str(history_index)][-1])
-                last_history[0] = datetime.now().second
+                last_history[0] = int(time())
                 socketio.emit('historyUpdate', last_history)
                 print(" >>> historyUpdate")
                 sleep(self.delay)
@@ -111,7 +111,7 @@ class updateThread(Thread):
 
 
 def update_history(data):
-    new_data = [datetime.now().second]
+    new_data = [int(time())]
     for sensor in data["modules"][0]["sensors"]:
         # pprint(list(sensor["data"].values())[1])
         new_data.append(list(sensor["data"].values())[1])
