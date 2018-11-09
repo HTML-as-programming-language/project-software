@@ -199,7 +199,7 @@ class Client:
                 print(self.port, "Informed api clients of added module")
         elif pid == 102:
             data /= 10
-            data -= 50
+            data += 5
 
             if self.current_temp == data:
                 return "is the same"
