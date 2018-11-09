@@ -49,7 +49,7 @@ history_index = None
 def i_want_history(arg):
     global history_index
     history_index = arg
-    socketio.emit('historyInit', history[history_index])
+    socketio.emit('historyInit', {"names": ["Timestamp", "Temperature", "Light thresholds"] ,"data" : history[history_index]})
 
 
 @socketio.on('iDontWantHistory')
