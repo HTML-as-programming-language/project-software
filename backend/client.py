@@ -198,13 +198,14 @@ class Client:
             if SPAM_DEBUG:
                 print(self.port, "Informed api clients of added module")
         elif pid == 102:
+            data -= 50
             if self.current_temp == data:
                 log_msg = "is the same"
                 return
 
             # Temperature update
             # self.current_temp = random.randint(data, 100)
-            self.current_temp = data/10
+            self.current_temp = data
 
             change = StateChange(self.name)
             change.sensor_id = "0"
