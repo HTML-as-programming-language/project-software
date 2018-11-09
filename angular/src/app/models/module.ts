@@ -37,6 +37,7 @@ export interface Module {
         hatch_status: number,
         automatic: boolean
     }
+    settings?: Setting[]
 
 }
 
@@ -64,5 +65,6 @@ export interface Setting {
     // frontend shit
     changed?: boolean
     sensorI?: number
+    sensorSetting: boolean
 
 }

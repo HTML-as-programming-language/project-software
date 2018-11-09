@@ -64,9 +64,14 @@ export class ModuleService {
             default:
                 return;
         }
+        var path = sett.sensorSetting ? 
+        `module/${module.id}/sensor/${sett.sensorI}/${sett.id}`
+        :
+        `module/${module.id}/setting/${sett.id}`
 
+        console.log(body)
         this.socket.emit("request", {
-            path: `module/${module.id}/sensor/${sett.sensorI}/${sett.id}`,
+            path,
             body
         });
     }
