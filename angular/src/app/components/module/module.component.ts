@@ -29,6 +29,13 @@ export class ModuleComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        setInterval(() => {
+            for (var d of this.lineChartData) {
+                d["data"] = Array.from({length: 20}, () => Math.floor(Math.random() * 40));
+                console.log(d);
+            }
+            this.lineChartData = JSON.parse(JSON.stringify(this.lineChartData));
+        }, 30);
     }
 
     ngOnDestroy() {

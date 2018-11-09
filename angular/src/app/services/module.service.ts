@@ -48,11 +48,17 @@ export class ModuleService {
     }
 
     openHatch(module: Module) {
-        
+        this.socket.emit("request", {
+            path: `module/${module.id}/setting/hatch_force/`,
+            body: 1
+        });
     }
 
     closeHatch(module: Module) {
-        
+        this.socket.emit("request", {
+            path: `module/${module.id}/setting/hatch_force/`,
+            body: 0
+        });
     }
 
     iWantHistory(module: Module) {
