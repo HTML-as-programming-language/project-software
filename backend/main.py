@@ -50,6 +50,14 @@ def handle_state_change():
 thread2 = threading.Thread(target=handle_state_change)
 thread2.start()
 
+thread3 = threading.Thread(target=handle_state_change)
+thread3.start()
+
+thread4 = threading.Thread(target=handle_state_change)
+thread4.start()
+
+
+
 print("MAIN!", __name__)
 
 port = 8080

@@ -51,7 +51,10 @@ def handler_api_clients():
             cp = api_clients.copy()
             r.reply.put(cp)
         elif r.request_type == "remove":
-            api_clients.remove(r.remove)
+            try:
+                api_clients.remove(r.remove)
+            except ValueError:
+                pass
             print("remove client:", r.remove)
         else:
             print("uknown request type:", r.request_type, r)
@@ -284,7 +287,7 @@ def send_request(endpoint, data=None):
 
     for i in cp:
         try:
-            r = requests.post(i + endpoint, json=data, timeout=0.2)
+            r = requests.post(i + endpoint, json=data, timeout=3)
             if r.status_code is not 200:
                 print(r.status_code)
                 print(r.text)
