@@ -46,12 +46,25 @@ class ModuleView:
 
     def get_config_items(self):
         c = []
+        if "settings" in self.module:
+            for sett in self.module["settings"]:
+                typ = determine_config_type(sett["type"],
+                                            sett.get("subtype", ""))
+
+                on_apply = self.create_on_apply(None, sett, typ)
+
+                c.append(ModuleView.ConfigItem(
+                    sett["label"],
+                    typ,
+                    on_apply
+                ))
+
         for s in self.module["sensors"]:
             for sett in s["settings"]:
                 typ = determine_config_type(sett["type"],
                                             sett.get("subtype", ""))
 
-                on_apply = self.create_on_apply(s, sett, typ)
+                on_apply = self.create_on_apply(s, sett, typ, True)
                 
                 c.append(ModuleView.ConfigItem(
                     s["label"],
@@ -60,7 +73,7 @@ class ModuleView:
                 ))
         return c
 
-    def create_on_apply(self, s, sett, typ):
+    def create_on_apply(self, s, sett, typ, sensor=False):
         def on_apply(data):
             vals = []
             print(data)
@@ -78,11 +91,18 @@ class ModuleView:
             else:
                 vals = data
 
-            backend.instance.set_module_sensor_setting(
-                    self.module["id"],
-                    s["id"],
-                    sett["id"],
-                    vals)
+            if sensor:
+                backend.instance.set_module_sensor_setting(
+                        self.module["id"],
+                        s["id"],
+                        sett["id"],
+                        vals)
+            else:
+                backend.instance.set_module_setting(
+                        self.module["id"],
+                        sett["id"],
+                        vals)
+
         return on_apply
 
     def get_actions(self):

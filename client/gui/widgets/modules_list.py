@@ -26,6 +26,10 @@ class ModulesList(Listbox):
             self.insert(0, module.module["label"])
 
     def add(self, module):
+        if module.module["label"] in self.get(0, "end"):
+            print("HAHHAHAHAHAHAHAHHAH MODULE ALREADY EXISTS NOOOOB")
+            return
+
         self.modules.append(module)
         self.insert(END, module.module["label"])
 
