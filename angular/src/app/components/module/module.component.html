@@ -7,13 +7,13 @@
         </p>
          -->
 
-        <a class="btn btn-primary btn-lg mr-1" [ngClass]="{'disabled': module.data.hatch_status > 50}"
-            role="button">
+        <a class="btn btn-primary btn-lg mr-1" [ngClass]="{'disabled': module.data.hatch_status > 50 || module.data.automatic}"
+            role="button" (click)="moduleService.openHatch(module)">
             <i class="fas fa-long-arrow-alt-up"></i>
         </a>
 
-        <a class="btn btn-primary btn-lg" [ngClass]="{'disabled': module.data.hatch_status < 50}"
-            role="button">
+        <a class="btn btn-primary btn-lg" [ngClass]="{'disabled': module.data.hatch_status < 50 || module.data.automatic}"
+            role="button" (click)="moduleService.closeHatch(module)">
             <i class="fas fa-long-arrow-alt-down"></i>
         </a>
 
@@ -48,19 +48,24 @@
     <!-- SETTINGS -->
     <div class="row mb-4">
 
-        <div class="col-6 card" *ngFor="let sett of settings">
-            <div class="card-body">
-                <h6 class="card-title">{{sett.label}}</h6>
+        <div class="col-6 p2" *ngFor="let sett of settings">
 
-                <div *ngIf="sett.subtype == 'minmax'" class="setting-body">
-                    <ng-container *ngTemplateOutlet="minmaxSetting; context: { sett: sett }"></ng-container>
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">{{sett.label}}</h6>
+
+                    <div *ngIf="sett.subtype == 'minmax'"
+                        class="setting-body">
+                        <ng-container *ngTemplateOutlet="minmaxSetting; context: { sett: sett }"></ng-container>
+                    </div>
+
+                    <button class="btn btn-primary mt-4"
+                        [disabled]="!sett.changed" (click)="apply(sett)">
+                        <i class="fas fa-check"></i>
+                        Apply
+                    </button>
+
                 </div>
-
-                <button class="btn btn-primary mt-4" [disabled]="!sett.changed">
-                    <i class="fas fa-check"></i>
-                    Apply
-                </button>
-
             </div>
         </div>
 

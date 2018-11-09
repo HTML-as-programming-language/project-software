@@ -63,5 +63,6 @@ export interface Setting {
 
     // frontend shit
     changed?: boolean
+    sensorI?: number
 
 }
