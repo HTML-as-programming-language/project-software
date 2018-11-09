@@ -347,3 +347,27 @@ class Client:
         change.data_item = "labelAutomatic"
         change.value = str(self.is_automatic)
         self.state_change_queue.put(change)
+
+    def set_servo_open_perc(self, perc):
+        """
+        Send packet to set the open position of the servo
+        (packet 15).
+
+        perc: 
+        """
+
+        val = perc/100*35+35
+
+        self.write_queue.put(Client.WriteReq(15, int(val)))
+
+    def set_servo_close_perc(self, perc):
+        """
+        Send packet to set the close position of the servo
+        (packet 15).
+
+        perc: 
+        """
+
+        val = perc/100*35+35
+
+        self.write_queue.put(Client.WriteReq(16, int(val)))

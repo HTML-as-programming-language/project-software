@@ -130,6 +130,11 @@ def module_setting_set(module_id, setting_key):
             _b.clients[module_id].enable_autonomus()
         else:
             _b.clients[module_id].disable_autonomus()
+    elif setting_key == "servo_minmax":
+        _b.clients[module_id].set_servo_close_perc(
+                int(content[0]))
+        _b.clients[module_id].set_servo_open_perc(
+                int(content[1]))
     else:
         return json_err("unknown setting")
 
