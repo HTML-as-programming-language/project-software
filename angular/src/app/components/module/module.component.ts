@@ -10,14 +10,10 @@ import { Module, Setting } from 'src/app/models/module';
 })
 export class ModuleComponent implements OnInit, OnDestroy {
 
-    lineChartData: Array<any> = [
-        { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-        { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
-        { data: [18, 48, 77, 9, 100, 27, 40], label: 'Series C' }
-    ];
-    lineChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
     lineChartOptions: any = {
-        responsive: true
+        responsive: true,
+        animation: false,
+        elements: { point: { radius: 0 } }
     };
 
     _module: Module;
@@ -30,12 +26,6 @@ export class ModuleComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        setInterval(() => {
-            for (var d of this.lineChartData) {
-                d["data"] = Array.from({ length: 20 }, () => Math.floor(Math.random() * 40));
-            }
-            this.lineChartData = JSON.parse(JSON.stringify(this.lineChartData));
-        }, 30);
     }
 
     ngOnDestroy() {

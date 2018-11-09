@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Module, Setting } from '../models/module';
 import * as io from 'socket.io-client';
+import { UtilsService } from './utils.service';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,14 @@ export class ModuleService {
     modules: Module[] = [];
     socket: SocketIOClient.Socket;
 
-    constructor() {
+    history: Array<any> = [
+        { data: [], label: 'bla' }
+    ];
+    historyLabels: Array<any> = [];
+
+    constructor(
+        private utils: UtilsService
+    ) {
 
         this.socket = (window as any).socket = io.connect("http://localhost:8081");
 
@@ -19,10 +27,26 @@ export class ModuleService {
         this.socket.on("update", onUpdate);
 
         this.socket.on("historyInit", data => {
-            console.log(data)
+            var his = []
+            for (var i = 1; i < data.names.length; i++) {
+                his.push({
+                    data: data.data.map(arr => arr[i]),
+                    label: data.names[i]
+                })
+                this.historyLabels = data.data.map(arr => utils.timestampToString(arr[0], true))
+            }
+            this.history = his;
         });
         this.socket.on("historyUpdate", data => {
-            console.log(data)
+
+            var his = this.history;
+            for (var i = 1; i < data.length; i++) {
+                if (i - 1 in his)
+                    his[i - 1].data.push(data[i])
+            }
+            this.history = his;
+            this.historyLabels = this.historyLabels.concat([utils.timestampToString(data[0], true)])
+
         });
     }
 
@@ -42,21 +66,21 @@ export class ModuleService {
         }
 
         this.socket.emit("request", {
-            path: `module/${module.id}/sensor/${sett.sensorI}/${sett.id}/`,
+            path: `module/${module.id}/sensor/${sett.sensorI}/${sett.id}`,
             body
         });
     }
 
     openHatch(module: Module) {
         this.socket.emit("request", {
-            path: `module/${module.id}/setting/hatch_force/`,
+            path: `module/${module.id}/setting/hatch_force`,
             body: 1
         });
     }
 
     closeHatch(module: Module) {
         this.socket.emit("request", {
-            path: `module/${module.id}/setting/hatch_force/`,
+            path: `module/${module.id}/setting/hatch_force`,
             body: 0
         });
     }

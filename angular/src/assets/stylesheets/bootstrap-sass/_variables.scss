@@ -44,8 +44,8 @@ $body-color:            $color_titles;
 // Quickly modify global styling by enabling or disabling optional features.
 
 $enable-caret:                                true !default;
-$enable-rounded:                              false !default;
-$enable-shadows:                              false !default;
+$enable-rounded:                              true !default;
+$enable-shadows:                              true !default;
 $enable-gradients:                            false !default;
 $enable-transitions:                          true !default;
 $enable-prefers-reduced-motion-media-query:   true !default;

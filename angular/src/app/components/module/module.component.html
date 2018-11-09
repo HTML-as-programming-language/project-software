@@ -71,6 +71,16 @@
 
     </div>
 
+    <!-- GRAPH -->
+    <div style="display: block;">
+
+        <canvas baseChart *ngIf="moduleService.historyLabels.length > 0"
+            width="400" height="200" [datasets]="moduleService.history"
+            [labels]="moduleService.historyLabels"
+            [options]="lineChartOptions" chartType="line">
+        </canvas>
+    </div>
+
 </div>
 
 <!-- MIN-MAX-SETTING -->
@@ -93,11 +103,3 @@
         [min]="minRange(sett)" [max]="maxRange(sett)">
 
 </ng-template>
-
-<div style="display: block;">
-
-    <canvas baseChart width="400" height="400" [datasets]="lineChartData"
-        [labels]="lineChartLabels" [options]="lineChartOptions"
-        chartType="line">
-    </canvas>
-</div>
