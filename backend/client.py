@@ -198,8 +198,8 @@ class Client:
             if SPAM_DEBUG:
                 print(self.port, "Informed api clients of added module")
         elif pid == 102:
-            data -= 50
             data /= 10
+            data -= 50
 
             if self.current_temp == data:
                 return "is the same"
