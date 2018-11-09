@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, jsonify
 import datetime
 from client import SensorType
@@ -131,6 +133,12 @@ def module_setting_set(module_id, setting_key):
         else:
             _b.clients[module_id].disable_autonomus()
     elif setting_key == "servo_minmax":
+        if type(content) is str:
+            content = json.loads(content)
+
+        if type(content) is not list or len(content) < 2:
+            return json_err("not two values provided for servo")
+
         _b.clients[module_id].set_servo_close_perc(
                 int(content[0]))
         _b.clients[module_id].set_servo_open_perc(
