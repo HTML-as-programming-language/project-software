@@ -44,7 +44,7 @@ void loop()
 
   //Serial.write(0x00);
   Serial.write(0x08);
-
+  
   Serial.flush();
   /*Serial.write(0);
   Serial.write(0);

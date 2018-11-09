@@ -142,46 +142,79 @@ class Client:
 
                 print(self.port, "Informed api clients of added module")
             elif pid == 102:
+                if self.current_temp == data:
+                    print("is the same")
+                    return
+
                 # Temperature update
                 # self.current_temp = random.randint(data, 100)
                 self.current_temp = data/10
 
-                # TODO: Also send update for "temp" value, not label.
                 change = StateChange(self.name)
                 change.sensor_id = "0"
                 change.data_item = "label"
                 change.value = str(self.current_temp) + "C"
                 self.state_change_queue.put(change)
 
+                change = StateChange(self.name)
+                change.sensor_id = "0"
+                change.data_item = "temp"
+                change.value = self.current_temp
+                self.state_change_queue.put(change)
             elif pid == 103:
+                if self.current_light == data:
+                    print("is the same")
+                    return
+
                 # Light update
                 self.current_light = data
 
-                # TODO: Also send update for "temp" value, not label.
                 change = StateChange(self.name)
                 change.sensor_id = "1"
                 change.data_item = "label"
                 change.value = str(data) + "%"
                 self.state_change_queue.put(change)
 
+                change = StateChange(self.name)
+                change.sensor_id = "1"
+                change.data_item = "light"
+                change.value = data
+                self.state_change_queue.put(change)
             elif pid == 104:
                 # Current pos
                 # self.current_pos = random.randint(data, 100)
+                if self.current_pos == data:
+                    print("is the same")
+                    return
+
                 self.current_pos = data
 
-                # TODO: Also send update for "temp" value, not label.
                 change = StateChange(self.name)
                 change.data_item = "labelHatch open"
                 change.value = str(self.current_pos) + "%"
                 self.state_change_queue.put(change)
+
+                change = StateChange(self.name)
+                change.data_item = "hatch_open"
+                change.value = self.current_pos
+                self.state_change_queue.put(change)
             elif pid == 105:
-                # Light update
+                if self.current_distance == data:
+                    return
+
+                # Distance update
                 self.current_distance = data
 
                 change = StateChange(self.name)
                 change.data_item = "labelDistance"
                 change.value = str(self.current_distance) + " cm"
                 self.state_change_queue.put(change)
+
+                change = StateChange(self.name)
+                change.data_item = "distance"
+                change.value = self.current_distance
+                self.state_change_queue.put(change)
+
             else:
                 print(self.port, "unknown packet id:", pid)
 
@@ -291,6 +324,7 @@ class Client:
         """
         Send packet to disable autonomus function.
         """
+
         self.write_queue.put(Client.WriteReq(53, 1))
         self.is_automatic = False
 
@@ -303,6 +337,7 @@ class Client:
         """
         Send packet to enable autonomus function.
         """
+
         self.write_queue.put(Client.WriteReq(53, 0))
         self.is_automatic = True
 
