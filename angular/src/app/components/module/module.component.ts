@@ -26,9 +26,15 @@ export class ModuleComponent implements OnInit {
 
         if (!this.settings && module) {
             this.settings = [];
-            for (var sensor of module.sensors)
-                for (var sett of sensor.settings)
-                        this.settings.push(JSON.parse(JSON.stringify(sett)));
+            var sensI = 0;
+            for (var sensor of module.sensors) {
+                for (var sett of sensor.settings) {
+                    var s: Setting = JSON.parse(JSON.stringify(sett));
+                    s.sensorI = sensI;
+                    this.settings.push(s);
+                }
+                sensI++;
+            }
         }
 
         return module;
@@ -40,13 +46,18 @@ export class ModuleComponent implements OnInit {
         var data = [];
         const getData = (obj, startWithLabel) => {
             if (!obj) return;
-            for (var key in obj) 
-                if (typeof key == "string" && (!startWithLabel || key.startsWith("label"))) 
+            for (var key in obj)
+                if (typeof key == "string" && (!startWithLabel || key.startsWith("label")))
                     data.push([startWithLabel ? key.substr(5) : key, obj[key]]);
         }
         getData(m.data, true);
         for (var sensor of m.sensors) getData(sensor.data, false);
         return data;
+    }
+
+    apply(sett: Setting) {
+        this.moduleService.applySetting(this.module, sett);
+        sett.changed = false;
     }
 
     minRange(sett: Setting): number {
