@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModuleService } from 'src/app/services/module.service';
 import { ActivatedRoute } from '@angular/router';
 import { Module, Setting } from 'src/app/models/module';
@@ -8,7 +8,7 @@ import { Module, Setting } from 'src/app/models/module';
     templateUrl: './module.component.html',
     styleUrls: ['./module.component.scss']
 })
-export class ModuleComponent implements OnInit {
+export class ModuleComponent implements OnInit, OnDestroy {
 
     settings: Setting[];
 
@@ -19,6 +19,12 @@ export class ModuleComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+    }
+
+    ngOnDestroy() {
+        var m = this.module;
+        if (m)
+            this.moduleService.iDontWantHistory(m);
     }
 
     get module(): Module {
@@ -36,6 +42,9 @@ export class ModuleComponent implements OnInit {
                 sensI++;
             }
         }
+
+        if (module)
+            this.moduleService.iWantHistory(module);
 
         return module;
     }

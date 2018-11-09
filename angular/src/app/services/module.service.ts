@@ -18,10 +18,6 @@ export class ModuleService {
         this.socket.on("init", onUpdate);
         this.socket.on("update", onUpdate);
 
-        this.socket.emit("iWantHistory", "hghg");
-
-        this.socket.emit("iDoNotWantHistory", "id");
-
         this.socket.on("historyInit", data => {
 
         });
@@ -52,11 +48,19 @@ export class ModuleService {
     }
 
     openHatch(module: Module) {
-
+        
     }
 
     closeHatch(module: Module) {
         
+    }
+
+    iWantHistory(module: Module) {
+        this.socket.emit("iWantHistory", module.id);
+    }
+
+    iDontWantHistory(module: Module) {
+        this.socket.emit("iDoNotWantHistory", module.id);
     }
 
 }
