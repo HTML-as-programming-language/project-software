@@ -2,7 +2,10 @@ import glob
 from multiprocessing import Queue
 from queue import Empty
 import sys
+
 from serial.serialutil import SerialException
+from serial.tools import list_ports
+
 from client import Client
 
 import api
@@ -17,7 +20,7 @@ class Backend:
     def __check_new_clients(self):
         ports = []
         if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)]
+            ports = [x.device for x in list(list_ports.comports())]
         elif (sys.platform.startswith('linux')
               or sys.platform.startswith('cygwin')):
 
