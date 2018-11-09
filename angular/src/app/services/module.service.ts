@@ -22,7 +22,7 @@ export class ModuleService {
 
         this.socket = (window as any).socket = io.connect("http://localhost:8081");
 
-        const onUpdate = data => this.modules = data["modules"];
+        const onUpdate = data => {this.modules = data["modules"]; console.log(data)};
         this.socket.on("init", onUpdate);
         this.socket.on("update", onUpdate);
 
@@ -71,17 +71,10 @@ export class ModuleService {
         });
     }
 
-    openHatch(module: Module) {
+    toggleHatch(module: Module, open) {
         this.socket.emit("request", {
             path: `module/${module.id}/setting/hatch_force`,
-            body: 1
-        });
-    }
-
-    closeHatch(module: Module) {
-        this.socket.emit("request", {
-            path: `module/${module.id}/setting/hatch_force`,
-            body: 0
+            body: open ? 1 : 0
         });
     }
 
@@ -91,6 +84,13 @@ export class ModuleService {
 
     iDontWantHistory(module: Module) {
         this.socket.emit("iDoNotWantHistory", module.id);
+    }
+
+    toggleAutomatic(module: Module, automatic) {
+        this.socket.emit("request", {
+            path: `module/${module.id}/setting/automatic`,
+            body: automatic ? 1 : 0
+        });
     }
 
 }

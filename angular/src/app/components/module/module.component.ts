@@ -17,6 +17,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
     };
 
     _module: Module;
+    _automatic: boolean;
     settings: Setting[];
 
     constructor(
@@ -55,6 +56,9 @@ export class ModuleComponent implements OnInit, OnDestroy {
             this._module = module;
         }
 
+        if (module)
+            this._automatic = module.data.automatic;
+
         return module;
     }
 
@@ -88,6 +92,14 @@ export class ModuleComponent implements OnInit, OnDestroy {
         if (sett.id == "temp_threshold")
             return 50;
         return 100;
+    }
+
+    get automatic(): boolean {
+        return this._automatic
+    }
+
+    set automatic(a: boolean) {
+        this.moduleService.toggleAutomatic(this.module, a);
     }
 
 }
