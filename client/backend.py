@@ -17,6 +17,7 @@ class Backend:
         try:
             r = requests.post(self.url + endpoint, json=data)
             if r.status_code is not 200:
+                print(r.text)
                 self.error_callback(r.status_code)
                 return None
             return r

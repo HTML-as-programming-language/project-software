@@ -16,7 +16,7 @@ myapp.master.title("App")
 myapp.master.protocol("WM_DELETE_WINDOW", lambda: myapp.master.destroy())
 
 port = 8081
-backendhost = "http://127.0.0.1:8080/"
+backendhost = "http://127.0.0.1:8080"
 myhost = "http://127.0.0.1:" + str(port) + "/"
 
 if len(sys.argv) >= 2:
