@@ -327,7 +327,7 @@ class Client:
         Send packet to disable autonomus function.
         """
 
-        self.write_queue.put(Client.WriteReq(53, 0))
+        self.write_queue.put(Client.WriteReq(53, 1))
         self.is_automatic = False
 
         change = StateChange(self.name)
@@ -340,7 +340,7 @@ class Client:
         Send packet to enable autonomus function.
         """
 
-        self.write_queue.put(Client.WriteReq(53, 1))
+        self.write_queue.put(Client.WriteReq(53, 0))
         self.is_automatic = True
 
         change = StateChange(self.name)
