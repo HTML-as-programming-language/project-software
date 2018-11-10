@@ -1,6 +1,4 @@
-import random
 from time import sleep, time
-from datetime import datetime
 
 from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO
@@ -131,4 +129,3 @@ def update_history(data):
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, port=8081)
-    # app.run(debug=True, port=8081)
