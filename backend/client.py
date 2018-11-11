@@ -6,6 +6,8 @@ from queue import Empty
 from time import sleep
 from serial.serialutil import SerialException
 
+from constants import SPAM_DEBUG
+
 
 class SensorType(Enum):
     TEMP = 0
@@ -26,6 +28,7 @@ class Client:
     Client is a module; an device connected to this computer by UART
     and controlling a hatch based on data from its sensor(s).
     supported_sensors: list of SensorType.
+
     current_temp: temperature in tenth degrees celsius.
     current_light: light in percentage.
     current_pos: position of hatch/sunscreen in percentage.
@@ -104,169 +107,175 @@ class Client:
         print(self.port, "waiting for connection to open")
         self.connection.isOpen()
         print(self.port, "connection opened")
-        self.thread = threading.Thread(target=self.run_serial_connection)
-        self.thread.start()
+        self.thread_read = threading.Thread(target=self.read_loop)
+        self.thread_read.start()
 
-    def run_serial_connection(self):
-        print(self.port, "run serial connection")
+        self.thread_write = threading.Thread(target=self.write_loop)
+        self.thread_write.start()
 
-        def handle_data(pid, data):
-            log_msg = ""
-
-            if pid == 101:
-                # Initialisation
-
-                if self.initted:
-                    print(self.port, "has already initted")
-                    return
+    def write_loop(self):
+        try:
+            while True:
 
                 try:
-                    if data & 0x01:
-                        self.supported_sensors.append(
-                                SensorType(SensorType.TEMP))
-                    if data & 0x02:
-                        self.supported_sensors.append(
-                                SensorType(SensorType.LIGHT))
+                    item = self.write_queue.get_nowait()
+                except Empty:
+                    sleep(0.1)
+                    continue
 
-                    self.initialized = True
-                except ValueError:
-                    print(self.port, "unsupported sensor:", data)
+                print(self.port, "write packet:", item.__dict__)
+                self.connection.write(
+                        [0xff,
+                         *item.pid.to_bytes(1, byteorder="big"),
+                         *item.data.to_bytes(1, byteorder="big")])
+                self.connection.flush()
+        except OSError as e:
+            print(self.port, "OSError write loop :<", e)
+            self.connection.close()
+            if self.quit_queue:
+                self.quit_queue.put(self.name)
+            return
 
-                print(self.port, "Added client:", self.port)
-                change = StateChange(self.name)
-                change.new = True
-                change.value = self
-                self.state_change_queue.put(change)
-
-                self.initted = True
-
-                print(self.port, "Informed api clients of added module")
-            elif pid == 102:
-                if self.current_temp == data:
-                    log_msg = "is the same"
-                    return
-
-                # Temperature update
-                # self.current_temp = random.randint(data, 100)
-                self.current_temp = data/10
-
-                change = StateChange(self.name)
-                change.sensor_id = "0"
-                change.data_item = "label"
-                change.value = str(self.current_temp) + "°C"
-                self.state_change_queue.put(change)
-
-                change = StateChange(self.name)
-                change.sensor_id = "0"
-                change.data_item = "temp"
-                change.value = self.current_temp
-                self.state_change_queue.put(change)
-            elif pid == 103:
-                if self.current_light == data:
-                    log_msg = "is the same"
-                    return
-
-                # Light update
-                self.current_light = data
-
-                change = StateChange(self.name)
-                change.sensor_id = "1"
-                change.data_item = "label"
-                change.value = str(data) + "%"
-                self.state_change_queue.put(change)
-
-                change = StateChange(self.name)
-                change.sensor_id = "1"
-                change.data_item = "light"
-                change.value = data
-                self.state_change_queue.put(change)
-            elif pid == 104:
-                # Current pos
-                # self.current_pos = random.randint(data, 100)
-                if self.current_pos == data:
-                    log_msg = "is the same"
-                    return
-
-                self.current_pos = data
-
-                change = StateChange(self.name)
-                change.data_item = "labelHatch open"
-                change.value = str(self.current_pos) + "%"
-                self.state_change_queue.put(change)
-
-                change = StateChange(self.name)
-                change.data_item = "hatch_open"
-                change.value = self.current_pos
-                self.state_change_queue.put(change)
-            elif pid == 105:
-                if self.current_distance == data:
-                    log_msg = "is the same"
-                    return
-
-                # Distance update
-                self.current_distance = data
-
-                change = StateChange(self.name)
-                change.data_item = "labelDistance"
-                change.value = str(self.current_distance) + " cm"
-                self.state_change_queue.put(change)
-
-                change = StateChange(self.name)
-                change.data_item = "distance"
-                change.value = self.current_distance
-                self.state_change_queue.put(change)
-
-            else:
-                log_msg =  "unknown packet id"
-
-            print(self.port, "incoming packet:", pid, data, " : ", log_msg)
-
+    def read_loop(self):
         next_is_id = False
         pid = 0
 
         self.connection.flushInput()
         self.connection.flushOutput()
 
-        while True:
-            data_in = []
 
-            # TODO: Make this nicer. Use select() or something.
-            try:
-                bytesToRead = self.connection.inWaiting()
-                if not bytesToRead:
-                    # No bytes to read. Check the write queue.
+        try:
+            while True:
+                # Receive packet
+                data_in = self.connection.read(1)
+                int_data = int.from_bytes(data_in, byteorder="big")
+                if int_data == 0xff:
+                    # Start of a packet
+                    next_is_id = True
+                elif next_is_id:
+                    next_is_id = False
+                    pid = int_data
+                elif pid:
+                    log_msg = self.handle_data(pid, int_data)
 
-                    try:
-                        item = self.write_queue.get_nowait()
-                    except Empty:
-                        sleep(0.2)
-                        continue
+                    print(self.port, "incoming packet:", pid, int_data, " : ", log_msg)
+                    pid = 0
+        except OSError as e:
+            print(self.port, "OSError read loop :<", e)
+            self.connection.close()
+            if self.quit_queue:
+                self.quit_queue.put(self.name)
+            return
 
-                    print(self.port, "write packet:", item.__dict__)
-                    self.connection.write(
-                            [0xff,
-                             *item.pid.to_bytes(1, byteorder="big"),
-                             *item.data.to_bytes(1, byteorder="big")])
-                    self.connection.flush()
-                else:
-                    # Receive packet
-                    data_in = self.connection.read(1)
-                    int_data = int.from_bytes(data_in, byteorder="big")
-                    if int_data == 0xff:
-                        # Start of a packet
-                        next_is_id = True
-                    elif next_is_id:
-                        next_is_id = False
-                        pid = int_data
-                    elif pid:
-                        handle_data(pid, int_data)
-                        pid = 0
-            except OSError as e:
-                print(self.port, "OSError :<", e)
-                self.connection.close()
-                if self.quit_queue:
-                    self.quit_queue.put(self.name)
+    def handle_data(self, pid, data):
+        if pid == 101:
+            # Initialisation
+
+            if self.initted:
+                print(self.port, "has already initted")
                 return
+
+            try:
+                if data & 0x01:
+                    self.supported_sensors.append(
+                            SensorType(SensorType.TEMP))
+                if data & 0x02:
+                    self.supported_sensors.append(
+                            SensorType(SensorType.LIGHT))
+
+                self.initialized = True
+            except ValueError:
+                print(self.port, "unsupported sensor:", data)
+
+            print(self.port, "Added client:", self.port)
+            change = StateChange(self.name)
+            change.new = True
+            change.value = self
+            self.state_change_queue.put(change)
+
+            self.initted = True
+
+            if SPAM_DEBUG:
+                print(self.port, "Informed api clients of added module")
+        elif pid == 102:
+            data /= 10
+            data += 5
+
+            if self.current_temp == data:
+                return "is the same"
+
+            # Temperature update
+            # self.current_temp = random.randint(data, 100)
+            self.current_temp = data
+
+            change = StateChange(self.name)
+            change.sensor_id = "0"
+            change.data_item = "label"
+            change.value = str(self.current_temp) + "°C"
+            self.state_change_queue.put(change)
+
+            change = StateChange(self.name)
+            change.sensor_id = "0"
+            change.data_item = "temp"
+            change.value = self.current_temp
+            self.state_change_queue.put(change)
+        elif pid == 103:
+            if self.current_light == data:
+                return "is the same"
+
+            # Light update
+            self.current_light = data
+
+            change = StateChange(self.name)
+            change.sensor_id = "1"
+            change.data_item = "label"
+            change.value = str(data) + "%"
+            self.state_change_queue.put(change)
+
+            change = StateChange(self.name)
+            change.sensor_id = "1"
+            change.data_item = "light"
+            change.value = data
+            self.state_change_queue.put(change)
+        elif pid == 104:
+            # Current pos
+            # self.current_pos = random.randint(data, 100)
+            if self.current_pos == data:
+                return "is the same"
+
+            self.current_pos = data
+
+            change = StateChange(self.name)
+            change.data_item = "labelHatch open"
+            change.value = str(self.current_pos) + "%"
+            self.state_change_queue.put(change)
+
+            change = StateChange(self.name)
+            change.data_item = "hatch_open"
+            change.value = self.current_pos
+            self.state_change_queue.put(change)
+        elif pid == 105:
+            if self.current_distance == data:
+                return "is the same"
+
+            # Distance update
+            self.current_distance = data
+
+            change = StateChange(self.name)
+            change.data_item = "labelDistance"
+            change.value = str(self.current_distance) + " cm"
+            self.state_change_queue.put(change)
+
+            change = StateChange(self.name)
+            change.data_item = "distance"
+            change.value = self.current_distance
+            self.state_change_queue.put(change)
+
+        else:
+            return "unknown packet id"
+
+        return ""
+
 
     def open_hatch(self):
         """
@@ -290,6 +299,9 @@ class Client:
         temp: int tenth degrees celcius.
         """
 
+        temp -= 5
+        temp *= 10
+
         self.write_queue.put(Client.WriteReq(11, temp))
 
     def set_threshold_close_temperature(self, temp):
@@ -299,6 +311,9 @@ class Client:
 
         temp: int tenth degrees celcius.
         """
+
+        temp -= 5
+        temp *= 10
 
         self.write_queue.put(Client.WriteReq(12, temp))
 

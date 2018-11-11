@@ -9,9 +9,16 @@ from serial.tools import list_ports
 from client import Client
 
 import api
+from constants import SPAM_DEBUG
 
 
 class Backend:
+    """
+    Class Backend handled the Clients (modules).
+    It watched for newly connected modules, and maintains the list of
+    connected modules and their Client class instance.
+    """
+
     def __init__(self, state_change_queue):
         self.clients = {}
         self.client_stop_queue = Queue()
@@ -61,7 +68,8 @@ class Backend:
                     print("Removed client:", port)
 
                     api.send_request("/module/" + name + "/delete")
-                    print("Informed api clients of removed module")
+                    if SPAM_DEBUG:
+                        print("Informed api clients of removed module")
 
             except Empty:
                 break

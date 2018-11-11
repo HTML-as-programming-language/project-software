@@ -7,6 +7,9 @@ import { UtilsService } from './utils.service';
     providedIn: 'root'
 })
 export class ModuleService {
+    /**
+     * This service is used to get data from modules and to change settings of modules
+     */
 
     modules: Module[] = [];
     socket: SocketIOClient.Socket;
@@ -50,10 +53,16 @@ export class ModuleService {
         });
     }
 
+    /**
+     * Get module by id
+     */
     getById(id: string): Module {
         for (var m of this.modules) if (m.id == id) return m;
     }
 
+    /**
+     * Change a setting of a module
+     */
     applySetting(module: Module, sett: Setting) {
         var body;
 
@@ -76,6 +85,9 @@ export class ModuleService {
         });
     }
 
+    /**
+     * Open or close hatch of module
+     */
     toggleHatch(module: Module, open) {
         this.socket.emit("request", {
             path: `module/${module.id}/setting/hatch_force`,
@@ -83,14 +95,23 @@ export class ModuleService {
         });
     }
 
+    /**
+     * Subscribe to history updates
+     */
     iWantHistory(module: Module) {
         this.socket.emit("iWantHistory", module.id);
     }
 
+    /**
+     * Unsubscribe from history updates
+     */
     iDontWantHistory(module: Module) {
         this.socket.emit("iDoNotWantHistory", module.id);
     }
 
+    /**
+     * Enable/disable auto mode
+     */
     toggleAutomatic(module: Module, automatic) {
         this.socket.emit("request", {
             path: `module/${module.id}/setting/automatic`,

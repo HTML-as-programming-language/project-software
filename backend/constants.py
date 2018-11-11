@@ -1,0 +1,2 @@
+
+SPAM_DEBUG = False

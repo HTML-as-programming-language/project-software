@@ -76,17 +76,24 @@ class ModuleView:
     def create_on_apply(self, s, sett, typ, sensor=False):
         def on_apply(data):
             vals = []
-            print(data)
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@222 data:", data)
             if typ == ModuleView.ConfigItem.Type.MIN_MAX:
+                filled = False
                 for x in data:
                     val = 0
                     try:
                         val = int(x)
+                        filled = True
                     except ValueError:
                         print("not 0", x)
                     vals.append(val)
-
+                if not filled:
+                    print("not filled")
+                    return
             elif typ == ModuleView.ConfigItem.Type.ONE_VALUE:
+                if data == "":
+                    print("not filled")
+                    return
                 vals = int(data)
             else:
                 vals = data

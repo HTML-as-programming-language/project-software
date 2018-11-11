@@ -5,8 +5,6 @@ import datetime
 from client import SensorType
 import requests
 import queue
-import threading
-from requests.exceptions import ConnectionError
 
 
 class Client:
@@ -37,6 +35,12 @@ request_queue = queue.Queue()
 
 
 def handler_api_clients():
+    """
+    handler_api_clients maintains the list of connected api clients.
+    It checks the request_queue, on which other threads can request
+    a copy of the api-clients list, or can request to add or remove
+    a client.
+    """
     print("handler_api_clients start")
     api_clients = []
     while True:
@@ -119,6 +123,8 @@ def module_setting_set(module_id, setting_key):
     content = ""
     try:
         content = request.get_json(force=True)
+        if type(content) is str:
+            content = json.loads(content)
     except Exception:
         pass
 
@@ -136,9 +142,6 @@ def module_setting_set(module_id, setting_key):
         else:
             _b.clients[module_id].disable_autonomus()
     elif setting_key == "servo_minmax":
-        if type(content) is str:
-            content = json.loads(content)
-
         if type(content) is not list or len(content) < 2:
             return json_err("not two values provided for servo")
 
@@ -160,6 +163,8 @@ def module_sensor_setting_set(module_id, sensor_id, sensor_setting_key):
     content = ""
     try:
         content = request.get_json(force=True)
+        if type(content) is str:
+            content = json.loads(content)
     except Exception:
         pass
 
