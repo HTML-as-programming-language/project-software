@@ -1,56 +1,257 @@
-#include <stdio.h>
+/* sb2db.c - This program demonstrates switching between single buffered
+   and double buffered windows when using GLUT.  Use the pop-up menu to
+   change the buffering style used.  On machine that split the screen's
+   color resolution in half when double buffering, you should notice better
+   coloration (less or no dithering) in single buffer mode (but flicker on
+   redraws, particularly when rotation is toggled on).  */
+
+/* This program is based on the GLUT scene.c program. */
+
 #include <stdlib.h>
+#include <GL/glut.h>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+int sbwin, dbwin;
+int angle;
 
-#include <glm/glm.hpp>
-using namespace glm;
+/*  Initialize material property and light source.  */
+void
+myinit(void)
+{
+  GLfloat light_ambient[] =
+  {0.3, 0.3, 0.3, 1.0};
+  GLfloat light_diffuse[] =
+  {6.0, 6.0, 6.0, 1.0};
+  GLfloat light_specular[] =
+  {1.0, 1.0, 1.0, 1.0};
+  /* light_position is NOT default value */
+  GLfloat light_position[] =
+  {-1.0, 1.0, 1.0, 0.0};
 
-int main() {
-  glewExperimental = true;
-  if( !glfwInit() )
-  {
-    fprintf( stderr, "failed to initialize GLFW\n");
-    return -1;
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+  glEnable(GL_LIGHT0);
+  glDepthFunc(GL_LESS);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
+}
+
+void
+display(void)
+{
+  static GLfloat red[] =
+  {0.8, 0.0, 0.0, 1.0};
+  static GLfloat yellow[] =
+  {0.8, 0.8, 0.0, 1.0};
+  static GLfloat green[] =
+  {0.0, 0.8, 0.0, 1.0};
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glPushMatrix();
+  glRotatef(angle, 1.0, 0.0, 0.0);
+  glScalef(1.3, 1.3, 1.3);
+  glRotatef(20.0, 1.0, 0.0, 0.0);
+
+  glPushMatrix();
+  glTranslatef(-0.75, 0.5, 0.0);
+  glRotatef(90.0, 1.0, 0.0, 0.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, red);
+  glutSolidTorus(0.275, 0.85, 10, 15);
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(-0.75, -0.5, 0.0);
+  glRotatef(270.0, 1.0, 0.0, 0.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, yellow);
+  glutSolidCone(1.0, 1.0, 40, 40);
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(0.75, 0.0, -1.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, green);
+  glutSolidIcosahedron();
+  glPopMatrix();
+
+  glPopMatrix();
+
+  if (glutGetWindow() == sbwin) {
+    glFlush();
+  } else {
+    glutSwapBuffers();
   }
+}
 
-  glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // OpenGL 3.3
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // MacOS requires this
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+/* Used by both windows, this routine setups the OpenGL context's
+   projection matrix correctly.  Note that we call this routine for
+   both contexts to keep them in sync after reshapes. */
+void
+reshapeOpenGLState(int w, int h)
+{
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  if (w <= h)
+    glOrtho(-2.5, 2.5, -2.5 * (GLfloat) h / (GLfloat) w,
+      2.5 * (GLfloat) h / (GLfloat) w, -10.0, 10.0);
+  else
+    glOrtho(-2.5 * (GLfloat) w / (GLfloat) h,
+      2.5 * (GLfloat) w / (GLfloat) h, -2.5, 2.5, -10.0, 10.0);
+  glMatrixMode(GL_MODELVIEW);
+}
 
-  // Open a window and create its OpenGL context
-  GLFWwindow* window; // (In the accompanying source code, this variable is global for simplicity)
-  window = glfwCreateWindow( 1024, 768, "Tutorial 01", NULL, NULL);
-  if( window == NULL ){
-      fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
-      glfwTerminate();
-      return -1;
+/* When the single buffered (ie, the top window) gets resized, we
+   need to resize the child double buffered window as well.  Hence
+   the glutReshapeWindow on the child.  NOTE:  You want a separate
+   resize callback for the double buffered window to set the viewport
+   since the window's size won't really be changed until the double buffered
+   gets its dbReshape callback.  Otherwise, you could trick OpenGL intop
+   clipping based on the old window size. */
+void
+sbReshape(int w, int h)
+{
+  glutSetWindow(sbwin);
+  glViewport(0, 0, w, h);
+  reshapeOpenGLState(w, h);
+  glutSetWindow(dbwin);
+  glutReshapeWindow(w, h);
+}
+
+void
+dbReshape(int w, int h)
+{
+  glViewport(0, 0, w, h);
+  reshapeOpenGLState(w, h);
+}
+
+void
+rotation(void)
+{
+  angle += 0.001;
+  angle = angle % 360;
+  glutPostRedisplay();
+}
+
+int animation = 0;  /* Are we doing an animated rotation currently? */
+
+void
+main_menu(int value)
+{
+  switch (value) {
+  case 1:
+    /* Smart toggle rotation ensures we switch to double buffered when
+       animating and single buffered when not animating. */
+    animation = 1 - animation;  /* Toggle. */
+    if (animation) {
+      glutIdleFunc(rotation);
+      glutSetWindow(sbwin);
+      glutSetWindowTitle("sb2db - double buffer mode");
+      glutSetWindow(dbwin);
+      glutShowWindow();   /* Show the double buffered window. */
+    } else {
+      glutIdleFunc(NULL);
+      glutSetWindow(sbwin);
+      glutSetWindowTitle("sb2db - single buffer mode");
+      glutSetWindow(dbwin);
+      glutHideWindow();   /* Hide the double buffered window. */
+    }
+    break;
+  case 2:
+    glutSetWindow(dbwin);
+    glutHideWindow();   /* Hide the double buffered window. */
+    glutSetWindow(sbwin);
+    glutSetWindowTitle("sb2db - single buffer mode");
+    break;
+  case 3:
+    glutSetWindow(sbwin);
+    glutSetWindowTitle("sb2db - double buffer mode");
+    glutSetWindow(dbwin);
+    glutShowWindow();   /* Show the double buffered window. */
+    break;
+  case 4:
+    animation = 1 - animation;  /* Toggle. */
+    if (animation)
+      glutIdleFunc(rotation);
+    else
+      glutIdleFunc(NULL);
+    break;
+  case 666:
+    exit(0);
+    break;
   }
-  glfwMakeContextCurrent(window); // Initialize GLEW
-  glewExperimental=true; // Needed in core profile
-  if (glewInit() != GLEW_OK) {
-      fprintf(stderr, "Failed to initialize GLEW\n");
-      return -1;
+}
+
+/* You have to track the visibility of both the single buffered
+   and double buffered windows together. */
+void
+visibility(int state)
+{
+  static int sbvis = GLUT_NOT_VISIBLE, dbvis = GLUT_NOT_VISIBLE;
+  int eithervis;
+
+  if (glutGetWindow() == sbwin) {
+    sbvis = state;
+  } else {
+    dbvis = state;
   }
+  eithervis = (sbvis == GLUT_VISIBLE) || (dbvis == GLUT_VISIBLE);
+  if (eithervis) {
+    /* Resume rotating idle callback if we become visible and
+       animation is enabled. */
+    if (animation) {
+      glutIdleFunc(rotation);
+    }
+  } else {
+    /* Disable animation when both windows are not visible. */
+    glutIdleFunc(NULL);
+  }
+}
 
+int
+main(int argc, char **argv)
+{
+  glutInitWindowSize(500, 500);
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_SINGLE);
 
-    // Ensure we can capture the escape key being pressed below
-  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+  /* The top window is single buffered. */
+  sbwin = glutCreateWindow(argv[0]);
+  glutReshapeFunc(sbReshape);
+  glutDisplayFunc(display);
+  glutVisibilityFunc(visibility);
+  myinit();
 
-  do{
-      // Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
-      glClear( GL_COLOR_BUFFER_BIT );
+  /* The child window is double buffered.  We show this window
+     when displaying double buffered and hide it to show the
+     single buffered window. */
+  glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+  dbwin = glutCreateSubWindow(glutGetWindow(),
+    0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+  glutDisplayFunc(display);
+  glutReshapeFunc(dbReshape);
+  glutVisibilityFunc(visibility);
 
-      // Draw nothing, see you in tutorial 2 !
+  /* Call myinit for both the single buffered window and the
+     double buffered window.  We must mirror the same OpenGL
+     state in both window's OpenGL contexts.  If you make this
+     program more complicated, remember to keep the window's
+     context state in sync. */
+  myinit();
 
-      // Swap buffers
-      glfwSwapBuffers(window);
-      glfwPollEvents();
+  /* Initially hide the double buffered window to start in
+     single buffered mode. */
+  glutHideWindow();
 
-  } // Check if the ESC key was pressed or the window was closed
-  while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-         glfwWindowShouldClose(window) == 0 );
+  glutCreateMenu(main_menu);
+  glutAddMenuEntry("Smart rotation toggle", 1);
+  glutAddMenuEntry("Single buffer", 2);
+  glutAddMenuEntry("Double buffer", 3);
+  glutAddMenuEntry("Toggle rotation", 4);
+  glutAddMenuEntry("Quit", 666);
+  glutAttachMenu(GLUT_RIGHT_BUTTON);
+  glutSetWindow(sbwin);
+  glutAttachMenu(GLUT_RIGHT_BUTTON);
+  glutMainLoop();
+  return 0;             /* ANSI C requires main to return int. */
 }
