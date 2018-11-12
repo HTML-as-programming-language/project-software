@@ -53,7 +53,7 @@ export class ModuleComponent implements OnInit, OnDestroy {
             this.settings = this.settings.concat(JSON.parse(JSON.stringify(module.settings)))
         }
 
-        if (module && !this._module) {
+        if (module && (!this._module || this._module.id != module.id)) {
             this.moduleService.iWantHistory(module);
             this._module = module;
         }
