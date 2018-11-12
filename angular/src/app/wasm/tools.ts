@@ -35,13 +35,13 @@ export function exitActiveEnvironment() {
 
   const mod = window.Module;
   mod.noExitRuntime = false;
-  try {
-    mod.exit(0);
-  } catch (err) {
-    if (err.name !== 'ExitStatus') {
-      throw err;
-    }
-  }
+  // try {
+  //   mod.exit(0);
+  // } catch (err) {
+  //   if (err.name !== 'ExitStatus') {
+  //     throw err;
+  //   }
+  // }
 
   window.Module = null;
 

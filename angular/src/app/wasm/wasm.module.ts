@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { LaddaModule } from 'angular2-ladda';
 
-import { Wasm3dCubeComponent } from "./3d-model/3d-model.component";
+import { Wasm3dCubeComponent } from "./3d-cube/3d-cube.component";
 import { WasmConsoleLoggerComponent } from "./example/example.component";
 
 @NgModule({
