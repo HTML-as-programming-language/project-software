@@ -1,5 +1,7 @@
 # Website
 
+This is a test website to test how webassembly works.
+
 ## DEVELOPMENT - Installation
 ~~~~shell
 $ pip install Flask
