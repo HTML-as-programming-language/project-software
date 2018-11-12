@@ -17,7 +17,7 @@ Dit is de Python client, die origneel onderdeel was van de centrale/backend.
 
 ## angular
 
-Dit is de webclient geschreven in AngularJS.
+Dit is de webclient geschreven in Angular.
 
 ## app
 
