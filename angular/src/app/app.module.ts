@@ -12,6 +12,7 @@ import { ModulesListComponent } from './components/modules-list/modules-list.com
 import { ModuleComponent } from './components/module/module.component';
 import { HeaderComponent } from './ui/header/header.component';
 import { FooterComponent } from './ui/footer/footer.component';
+import { WasmModule } from "./wasm/wasm.module";
 
 @NgModule({
   declarations: [
@@ -19,14 +20,15 @@ import { FooterComponent } from './ui/footer/footer.component';
     ModulesListComponent,
     ModuleComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
     ChartsModule,
-    FormsModule
+    FormsModule,
+    WasmModule
   ],
   providers: [],
   bootstrap: [AppComponent]
